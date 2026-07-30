@@ -22,8 +22,8 @@ const TRAIT_KO: Record<string, string> = {
   CREATIVE: "창의성", HARMONY: "조율력", COMMAND: "리더십", STEADY: "안정감",
 };
 
-const ROLE_EMOJI: Record<string, string> = {
-  leader: "👑", vice: "🥈", treasurer: "💰", mood: "🎉", idea: "💡", mediator: "🕊️", brake: "🛑",
+const ELEMENT_CLASS: Record<string, string> = {
+  목: "bg-wood", 화: "bg-fire", 토: "bg-earth", 금: "bg-metal", 수: "bg-water",
 };
 
 async function getReport(slug: string): Promise<Report | null> {
@@ -45,95 +45,104 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
   const { slug } = await params;
   const report = await getReport(slug);
   if (!report) {
-    return <p className="pt-10 text-center text-slate-500">리포트가 아직 없거나 만료됐어요.</p>;
+    return <p className="pt-10 text-center text-ink-soft">리포트가 아직 없거나 만료됐어요.</p>;
   }
 
   return (
-    <div className="space-y-8">
-      <header className="space-y-1">
-        <p className="text-xs text-indigo-400">{report.teamName ?? "우리 팀"}</p>
-        <h1 className="text-3xl font-bold">{report.archetype}</h1>
-        {report.archetypeDesc && <p className="text-sm text-slate-400">{report.archetypeDesc}</p>}
+    <div className="space-y-9">
+      <header className="space-y-2">
+        <p className="text-xs tracking-[0.35em] text-ink-soft">{report.teamName ?? "우리 팀"} · 팀 명식</p>
+        <h1 className="font-serif text-4xl font-bold leading-snug">{report.archetype}</h1>
+        {report.archetypeDesc && <p className="text-sm text-ink-soft">{report.archetypeDesc}</p>}
       </header>
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={`/api/reports/${slug}/card.png`} alt="공유 카드"
-        className="w-full rounded-2xl border border-slate-800" />
+        className="washi w-full rounded-sm" />
 
-      <section className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+      <section className="washi rounded-sm p-6">
         <div className="flex items-end justify-between">
-          <h2 className="text-sm font-semibold text-slate-300">팀 하모니</h2>
-          <span className="text-4xl font-bold text-emerald-400">{report.harmonyScore}<span className="text-base text-slate-500">/100</span></span>
+          <h2 className="font-serif text-base font-bold">팀 하모니</h2>
+          <p className="font-serif text-5xl font-bold">
+            {report.harmonyScore}<span className="ml-1 text-base font-normal text-ink-soft">/ 100</span>
+          </p>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800">
-          <div className="h-full rounded-full bg-emerald-500" style={{ width: `${report.harmonyScore}%` }} />
+        <div className="mt-4 h-[3px] w-full bg-ink/10">
+          <div className="h-full bg-vermilion" style={{ width: `${report.harmonyScore}%` }} />
         </div>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-300">역할 추천</h2>
-        <div className="grid grid-cols-2 gap-3">
+        <h2 className="font-serif text-base font-bold">역할 추천</h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {report.roles.map((r) => (
-            <div key={r.nickname + r.role} className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-              <div className="text-2xl">{ROLE_EMOJI[r.role] ?? "🎯"}</div>
-              <div className="mt-1 font-semibold">{r.nickname}</div>
-              <div className="text-xs text-indigo-300">{r.roleKo}{r.unique === false ? " (중복)" : ""}</div>
+            <div key={r.nickname + r.role} className="washi rounded-sm p-4 text-center">
+              <div className="font-serif text-xl font-bold">{r.nickname}</div>
+              <div className="mt-1 inline-block border border-vermilion px-2 py-0.5 text-xs text-vermilion">
+                {r.roleKo}{r.unique === false ? " ·중복" : ""}
+              </div>
             </div>
           ))}
         </div>
       </section>
 
       {report.bestPair && (
-        <PairCard tone="best" title={`🔥 베스트 케미 — ${report.bestPair.a} × ${report.bestPair.b} (${report.bestPair.total}점)`}
-          factors={report.bestPair.factors} />
+        <PairCard tone="best" title={`붉은 실 ─ ${report.bestPair.a} × ${report.bestPair.b}`}
+          score={report.bestPair.total} factors={report.bestPair.factors} />
       )}
       {report.worstPair && (
-        <PairCard tone="worst" title={`⚡ 조심 조합 — ${report.worstPair.a} × ${report.worstPair.b} (${report.worstPair.total}점)`}
-          factors={report.worstPair.factors} />
+        <PairCard tone="worst" title={`서걱이는 조합 ─ ${report.worstPair.a} × ${report.worstPair.b}`}
+          score={report.worstPair.total} factors={report.worstPair.factors} />
       )}
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-300">팀 성향 밸런스</h2>
-        <div className="space-y-2 rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+        <h2 className="font-serif text-base font-bold">팀 성향 밸런스</h2>
+        <div className="washi space-y-2.5 rounded-sm p-6">
           {Object.entries(report.traitAvgs).map(([k, v]) => (
             <div key={k} className="flex items-center gap-3 text-xs">
-              <span className="w-12 shrink-0 text-slate-400">{TRAIT_KO[k] ?? k}</span>
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800">
-                <div className="h-full rounded-full bg-indigo-500" style={{ width: `${Math.min(100, v)}%` }} />
+              <span className="w-12 shrink-0 text-ink-soft">{TRAIT_KO[k] ?? k}</span>
+              <div className="h-[3px] flex-1 bg-ink/10">
+                <div className="h-full bg-ink" style={{ width: `${Math.min(100, v)}%` }} />
               </div>
-              <span className="w-8 text-right text-slate-500">{Math.round(v)}</span>
+              <span className="w-8 text-right font-serif text-sm">{Math.round(v)}</span>
             </div>
           ))}
         </div>
         <div className="flex flex-wrap gap-2 text-xs">
           {Object.entries(report.elementTotals).map(([k, v]) => (
-            <span key={k} className="rounded-full bg-slate-800 px-3 py-1 text-slate-300">{k} {v}</span>
+            <span key={k} className="flex items-center gap-1.5 border border-ink/20 bg-card px-3 py-1">
+              <i className={`inline-block h-2.5 w-2.5 rounded-full ${ELEMENT_CLASS[k] ?? "bg-ink"}`} />
+              {k} {v}
+            </span>
           ))}
         </div>
       </section>
 
       {report.riskNote && (
-        <section className="rounded-2xl border border-amber-800/50 bg-amber-950/20 p-5 text-sm text-amber-200">
-          ⚠️ {report.riskNote}
+        <section className="border-l-4 border-vermilion bg-vermilion/5 p-5 text-sm">
+          <span className="font-serif font-bold text-vermilion">주의보 </span>{report.riskNote}
         </section>
       )}
 
       {report.samjaeMembers.length > 0 && (
-        <p className="text-xs text-slate-500">
-          🌊 올해 삼재: {report.samjaeMembers.join(", ")} — 올해는 무리하지 말고 서로 챙겨주기!
+        <p className="text-xs text-ink-soft">
+          🌊 올해 삼재: <span className="text-ink">{report.samjaeMembers.join(", ")}</span> — 올해는 무리하지 말고 서로 챙겨주기!
         </p>
       )}
     </div>
   );
 }
 
-function PairCard({ tone, title, factors }: { tone: "best" | "worst"; title: string; factors: string[] }) {
-  const border = tone === "best" ? "border-emerald-800/50 bg-emerald-950/20" : "border-rose-800/50 bg-rose-950/20";
+function PairCard({ tone, title, score, factors }: { tone: "best" | "worst"; title: string; score: number; factors: string[] }) {
+  const accent = tone === "best" ? "text-vermilion border-vermilion/40" : "text-water border-water/40";
   return (
-    <section className={`rounded-2xl border p-5 ${border}`}>
-      <h2 className="text-sm font-semibold">{title}</h2>
-      <ul className="mt-2 space-y-1 text-xs text-slate-400">
-        {factors.map((f) => <li key={f}>· {f}</li>)}
+    <section className={`washi rounded-sm border-l-4 p-6 ${accent.split(" ")[1]}`}>
+      <div className="flex items-baseline justify-between">
+        <h2 className={`font-serif text-base font-bold ${accent.split(" ")[0]}`}>{title}</h2>
+        <span className="font-serif text-2xl font-bold">{score}<span className="text-xs font-normal text-ink-soft">점</span></span>
+      </div>
+      <ul className="mt-3 space-y-1 text-xs text-ink-soft">
+        {factors.map((f) => <li key={f}>― {f}</li>)}
       </ul>
     </section>
   );

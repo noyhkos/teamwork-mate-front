@@ -1,5 +1,17 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
+import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
+
+const maruburi = localFont({
+  src: [
+    { path: "../fonts/MaruBuri-Regular.ttf", weight: "400" },
+    { path: "../fonts/MaruBuri-Bold.ttf", weight: "700" },
+  ],
+  variable: "--font-maruburi",
+});
+
+const body = Noto_Sans_KR({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
   title: "TeamworkMate — 재미로 보는 팀 사주×MBTI",
@@ -12,10 +24,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100">
+    <html lang="ko" className={`${maruburi.variable} ${body.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col font-sans">
+        <div className="ohaeng-rule" aria-hidden><i /><i /><i /><i /><i /></div>
         <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-10">{children}</main>
-        <footer className="py-6 text-center text-xs text-slate-600">
+        <footer className="py-6 text-center text-xs text-ink-faint">
           teamwork-mate · 전통 이론을 참고한 재미용 해석입니다
         </footer>
       </body>

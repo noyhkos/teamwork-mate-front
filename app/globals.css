@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
+/* hanji × ink × obangsaek design tokens */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f6f0e1;
+  --paper-soft: #efe7d2;
+  --card: #fbf7ec;
+  --ink: #26221c;
+  --ink-soft: #6d6558;
+  --ink-faint: #b4aa96;
+  --vermilion: #c3402b;
+  --wood: #3f6d54;
+  --fire: #c3402b;
+  --earth: #c08a2d;
+  --metal: #8e8a7e;
+  --water: #33506b;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-paper: var(--paper);
+  --color-paper-soft: var(--paper-soft);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-vermilion: var(--vermilion);
+  --color-wood: var(--wood);
+  --color-fire: var(--fire);
+  --color-earth: var(--earth);
+  --color-metal: var(--metal);
+  --color-water: var(--water);
+  --font-serif: var(--font-maruburi);
+  --font-sans: var(--font-body);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at 15% 8%, rgba(255, 255, 255, 0.9), transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(214, 196, 158, 0.35), transparent 55%),
+    var(--paper);
+  color: var(--ink);
+}
+
+/* 오행 five-color heading rule */
+.ohaeng-rule {
+  display: flex;
+  height: 6px;
+  width: 100%;
+}
+.ohaeng-rule > i {
+  flex: 1;
+}
+.ohaeng-rule > i:nth-child(1) { background: var(--wood); }
+.ohaeng-rule > i:nth-child(2) { background: var(--fire); }
+.ohaeng-rule > i:nth-child(3) { background: var(--earth); }
+.ohaeng-rule > i:nth-child(4) { background: var(--metal); }
+.ohaeng-rule > i:nth-child(5) { background: var(--water); }
+
+/* paper card */
+.washi {
+  background: var(--card);
+  border: 1px solid rgba(38, 34, 28, 0.18);
+  box-shadow: 2px 3px 0 rgba(38, 34, 28, 0.06);
+}
+
+/* vermilion seal button */
+.btn-ink {
+  background: var(--ink);
+  color: var(--paper);
+  transition: background 0.15s ease;
+}
+.btn-ink:hover:not(:disabled) {
+  background: #3a342b;
+}
+
+input, select {
+  accent-color: var(--vermilion);
 }

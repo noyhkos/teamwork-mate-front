@@ -49,11 +49,11 @@ export default function MemberForm({
     }
   }
 
-  const input = "w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none";
-  const label = "block text-xs text-slate-400 mb-1";
+  const input = "w-full rounded-sm bg-white/60 border border-ink/30 px-3 py-2 text-sm focus:border-vermilion focus:outline-none";
+  const label = "block text-xs text-ink-soft mb-1";
 
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+    <form onSubmit={submit} className="space-y-4 washi rounded-sm p-5">
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className={label}>닉네임</label>
@@ -76,7 +76,7 @@ export default function MemberForm({
           <label className={label}>태어난 시간</label>
           <input className={input} type="time" disabled={timeUnknown} value={form.birthTime ?? ""}
             onChange={(e) => setForm({ ...form, birthTime: e.target.value })} />
-          <label className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
+          <label className="mt-1 flex items-center gap-1.5 text-xs text-ink-soft">
             <input type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />
             시간 몰라요 (시주 제외하고 정직하게 계산)
           </label>
@@ -97,7 +97,7 @@ export default function MemberForm({
             <option value="lunar">음력</option>
           </select>
           {form.calendar === "lunar" && (
-            <label className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
+            <label className="mt-1 flex items-center gap-1.5 text-xs text-ink-soft">
               <input type="checkbox" checked={form.leapMonth}
                 onChange={(e) => setForm({ ...form, leapMonth: e.target.checked })} />
               윤달이에요
@@ -105,9 +105,9 @@ export default function MemberForm({
           )}
         </div>
       </div>
-      {error && <p className="text-sm text-rose-400">{error}</p>}
+      {error && <p className="text-sm text-fire">{error}</p>}
       <button disabled={busy}
-        className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold hover:bg-indigo-500 disabled:opacity-50">
+        className="w-full rounded-lg btn-ink py-2.5 text-sm font-semibold disabled:opacity-50">
         {busy ? "추가 중…" : "멤버 추가"}
       </button>
     </form>
