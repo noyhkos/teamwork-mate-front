@@ -13,9 +13,12 @@ export default function AdminPage() {
 
   const load = useCallback(async () => {
     try {
-      setTeam(await api<AdminView>(`/teams/admin/${admin}`));
+      const next = await api<AdminView>(`/teams/admin/${admin}`);
+      setTeam(next);
+      return next;
     } catch (err) {
       setError((err as Error).message);
+      return null;
     }
   }, [admin]);
 
@@ -23,16 +26,22 @@ export default function AdminPage() {
     load();
   }, [load]);
 
+  // The worker owns the job now, so the page polls until it reaches a terminal state.
+  useEffect(() => {
+    if (team?.status !== "processing") return;
+    const timer = setInterval(load, 2000);
+    return () => clearInterval(timer);
+  }, [team?.status, load]);
+
   async function analyze() {
     setAnalyzing(true);
     setError(null);
     try {
       await api(`/teams/admin/${admin}/analyze`, { method: "POST" });
-      await load();
     } catch (err) {
       setError((err as Error).message);
-      await load();
     } finally {
+      await load();
       setAnalyzing(false);
     }
   }
@@ -94,10 +103,19 @@ export default function AdminPage() {
           className="block rounded-lg py-3 text-center text-sm font-semibold text-paper bg-vermilion hover:opacity-90">
           🔮 리포트 보기 →
         </a>
+      ) : team.status === "processing" ? (
+        <div className="washi rounded-sm p-5 text-center">
+          <p className="font-serif text-sm font-bold">명식을 짓는 중…</p>
+          <p className="mt-1 text-xs text-ink-soft">사주 계산 · 궁합 · 역할 배정 · 문구 생성 (1분 정도 걸려요)</p>
+          <div className="ohaeng-rule mt-4 animate-pulse" aria-hidden><i /><i /><i /><i /><i /></div>
+        </div>
       ) : (
         <button onClick={analyze} disabled={analyzing || team.members.length < 2}
           className="w-full rounded-lg btn-ink py-3 text-sm font-semibold disabled:opacity-40">
-          {analyzing ? "분석 중… (사주 계산 + 궁합 + 역할 배정)" : team.members.length < 2 ? "멤버가 2명 이상 필요해요" : "✨ 분석 실행"}
+          {analyzing ? "요청 보내는 중…"
+            : team.status === "failed" ? "⟳ 다시 분석하기"
+            : team.members.length < 2 ? "멤버가 2명 이상 필요해요"
+            : "✨ 분석 실행"}
         </button>
       )}
     </div>
