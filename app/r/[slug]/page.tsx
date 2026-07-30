@@ -6,10 +6,11 @@ interface Report {
   teamName: string | null;
   archetype: string;
   archetypeDesc: string | null;
+  intro: string | null;
   harmonyScore: number;
-  roles: { nickname: string; role: string; roleKo: string; score: number; unique: boolean | null }[];
-  bestPair: { a: string; b: string; total: number; factors: string[] } | null;
-  worstPair: { a: string; b: string; total: number; factors: string[] } | null;
+  roles: { nickname: string; role: string; roleKo: string; score: number; unique: boolean | null; reason: string }[];
+  bestPair: { a: string; b: string; total: number; factors: string[]; reason: string | null } | null;
+  worstPair: { a: string; b: string; total: number; factors: string[]; reason: string | null } | null;
   traitAvgs: Record<string, number>;
   elementTotals: Record<string, number>;
   riskNote: string | null;
@@ -53,7 +54,9 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
       <header className="space-y-2">
         <p className="text-xs tracking-[0.35em] text-ink-soft">{report.teamName ?? "우리 팀"} · 팀 명식</p>
         <h1 className="font-serif text-4xl font-bold leading-snug">{report.archetype}</h1>
-        {report.archetypeDesc && <p className="text-sm text-ink-soft">{report.archetypeDesc}</p>}
+        {(report.intro ?? report.archetypeDesc) && (
+          <p className="text-sm text-ink-soft">{report.intro ?? report.archetypeDesc}</p>
+        )}
       </header>
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -81,6 +84,7 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
               <div className="mt-1 inline-block border border-vermilion px-2 py-0.5 text-xs text-vermilion">
                 {r.roleKo}{r.unique === false ? " ·중복" : ""}
               </div>
+              <p className="mt-2 text-xs leading-relaxed text-ink-soft">{r.reason}</p>
             </div>
           ))}
         </div>
@@ -88,11 +92,11 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
 
       {report.bestPair && (
         <PairCard tone="best" title={`붉은 실 ─ ${report.bestPair.a} × ${report.bestPair.b}`}
-          score={report.bestPair.total} factors={report.bestPair.factors} />
+          score={report.bestPair.total} factors={report.bestPair.factors} reason={report.bestPair.reason} />
       )}
       {report.worstPair && (
         <PairCard tone="worst" title={`서걱이는 조합 ─ ${report.worstPair.a} × ${report.worstPair.b}`}
-          score={report.worstPair.total} factors={report.worstPair.factors} />
+          score={report.worstPair.total} factors={report.worstPair.factors} reason={report.worstPair.reason} />
       )}
 
       <section className="space-y-3">
@@ -133,7 +137,9 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
   );
 }
 
-function PairCard({ tone, title, score, factors }: { tone: "best" | "worst"; title: string; score: number; factors: string[] }) {
+function PairCard({ tone, title, score, factors, reason }: {
+  tone: "best" | "worst"; title: string; score: number; factors: string[]; reason: string | null;
+}) {
   const accent = tone === "best" ? "text-vermilion border-vermilion/40" : "text-water border-water/40";
   return (
     <section className={`washi rounded-sm border-l-4 p-6 ${accent.split(" ")[1]}`}>
@@ -141,6 +147,7 @@ function PairCard({ tone, title, score, factors }: { tone: "best" | "worst"; tit
         <h2 className={`font-serif text-base font-bold ${accent.split(" ")[0]}`}>{title}</h2>
         <span className="font-serif text-2xl font-bold">{score}<span className="text-xs font-normal text-ink-soft">점</span></span>
       </div>
+      {reason && <p className="mt-3 text-sm leading-relaxed">{reason}</p>}
       <ul className="mt-3 space-y-1 text-xs text-ink-soft">
         {factors.map((f) => <li key={f}>― {f}</li>)}
       </ul>
