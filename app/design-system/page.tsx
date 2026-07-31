@@ -12,7 +12,7 @@ import Sheet from "@/components/ui/sheet";
 const SURFACES = [
   ["paper", "#f6f0e1", "페이지 배경"],
   ["paper-soft", "#efe7d2", "눌린 블록"],
-  ["card", "#fbf7ec", "카드 표면"],
+  ["card", "#fefcf5", "카드 표면"],
 ] as const;
 
 const INK = [

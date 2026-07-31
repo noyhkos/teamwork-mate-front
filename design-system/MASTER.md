@@ -32,7 +32,7 @@ CSS custom properties in `app/globals.css`, surfaced as Tailwind colours.
 |---|---|---|
 | `paper` | `#f6f0e1` | Page background |
 | `paper-soft` | `#efe7d2` | Recessed blocks, code strips |
-| `card` | `#fbf7ec` | Card surface (`.washi`) |
+| `card` | `#fefcf5` | Card surface (`.washi`) — near-white but still warm, so a card lifts clearly off `paper` |
 | `ink` | `#26221c` | Body text, primary button |
 | `ink-soft` | `#6d6558` | Secondary text |
 | `ink-faint` | `#b4aa96` | Captions, disabled, ordinals |
