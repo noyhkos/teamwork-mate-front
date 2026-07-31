@@ -71,7 +71,7 @@ export default function Home() {
 function LinkCard({ title, desc, url, warn }: { title: string; desc: string; url: string; warn?: boolean }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className={`rounded-2xl border p-5 ${warn ? "border-vermilion/50 bg-vermilion/5" : "border-slate-800 bg-card"}`}>
+    <div className={`rounded-sm border p-5 ${warn ? "border-vermilion/50 bg-vermilion/5" : "border-ink/20 bg-card"}`}>
       <h2 className="text-sm font-semibold">{title}</h2>
       <p className="mt-1 text-xs text-ink-soft">{desc}</p>
       <div className="mt-3 flex gap-2">

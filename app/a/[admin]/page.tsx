@@ -91,7 +91,7 @@ export default function AdminPage() {
         <details className="rounded-xl border border-ink/20 open:bg-card/30">
           <summary className="cursor-pointer p-4 text-sm font-semibold text-ink">➕ 대리 입력 (내가 아는 사람 추가)</summary>
           <div className="p-4 pt-0">
-            <MemberForm endpoint={`/teams/admin/${admin}/members`} onAdded={load} />
+            <MemberForm endpoint={`/teams/admin/${admin}/members`} onAdded={() => load()} />
           </div>
         </details>
       )}

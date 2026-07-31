@@ -13,7 +13,7 @@ export default function MemberForm({
   onAdded,
 }: {
   endpoint: string; // /teams/invite/{t}/members or /teams/admin/{t}/members
-  onAdded: () => void;
+  onAdded: (nickname: string) => void;
 }) {
   const [form, setForm] = useState<MemberInput>({
     nickname: "",
@@ -40,8 +40,9 @@ export default function MemberForm({
           birthTime: timeUnknown || !form.birthTime ? null : form.birthTime,
         }),
       });
+      const submitted = form.nickname.trim();
       setForm({ ...form, nickname: "", birthDate: "", birthTime: "" });
-      onAdded();
+      onAdded(submitted);
     } catch (err) {
       setError((err as Error).message);
     } finally {
