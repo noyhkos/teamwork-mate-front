@@ -179,7 +179,8 @@ export default function DateField({
                 value={view.m}
                 aria-label="월"
                 onChange={(e) => setView((v) => ({ ...v, m: Number(e.target.value) }))}
-                className={cx(controlClass, "h-11 min-h-0 w-[5.25rem] shrink-0 px-2")}
+                // Wide enough for "12월" once the chevron has claimed its 36px.
+                className={cx(controlClass, "select-chevron h-11 min-h-0 w-[5.5rem] shrink-0")}
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i} value={i}>{i + 1}월</option>
