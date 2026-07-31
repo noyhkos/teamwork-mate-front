@@ -9,8 +9,7 @@ import Card from "@/components/ui/card";
 import Sheet from "@/components/ui/sheet";
 import { api, LAST_TEAM_KEY, type TeamView } from "@/lib/api";
 import { copyText } from "@/lib/clipboard";
-import { cx } from "@/lib/cx";
-import { setStored, useStored } from "@/lib/storage";
+import { setStored } from "@/lib/storage";
 
 export default function TeamPage() {
   const { token } = useParams<{ token: string }>();
@@ -20,9 +19,6 @@ export default function TeamPage() {
   const [copied, setCopied] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
 
-  const storageKey = `twm:submitted:${token}`;
-  // There are no accounts, so "did I already enter?" only exists on this device.
-  const myNickname = useStored(storageKey);
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/t/${token}` : "";
 
   const load = useCallback(async () => {
@@ -62,10 +58,7 @@ export default function TeamPage() {
     return () => clearInterval(timer);
   }, [team?.status, load]);
 
-  function onAdded(nickname: string) {
-    // The first entry from this device is "me"; anything after that is entered
-    // on someone else's behalf and must not move the "· 나" marker.
-    if (myNickname === null) setStored(storageKey, nickname);
+  function onAdded() {
     setFormOpen(false);
     void load();
   }
@@ -176,23 +169,14 @@ export default function TeamPage() {
         </Card>
       ) : (
         <ul className="space-y-2">
-          {team.members.map((m) => {
-            const mine = m.nickname === myNickname;
-            return (
-              <li
-                key={m.nickname}
-                className={cx("washi rounded-card px-4 py-3", mine && "washi-marked")}
-              >
-                <p className="font-serif text-base font-bold">
-                  {m.nickname}
-                  {mine && <span className="ml-1.5 text-xs font-normal text-vermilion">· 나</span>}
-                </p>
-                <p className="mt-0.5 text-xs text-ink-soft">
-                  {m.birthDate} · {m.mbti}
-                </p>
-              </li>
-            );
-          })}
+          {team.members.map((m) => (
+            <li key={m.nickname} className="washi rounded-card px-4 py-3">
+              <p className="font-serif text-base font-bold">{m.nickname}</p>
+              <p className="mt-0.5 text-xs text-ink-soft">
+                {m.birthDate} · {m.mbti}
+              </p>
+            </li>
+          ))}
         </ul>
       )}
 

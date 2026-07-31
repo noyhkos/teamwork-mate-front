@@ -118,15 +118,6 @@ input, select, textarea {
   box-shadow: 2px 3px 0 rgba(38, 34, 28, 0.06);
 }
 
-/*
- * The one card that belongs to whoever is looking. A variant rather than a
- * utility because `.washi` sets the `border` shorthand, which would win over
- * any `border-l-*` class regardless of the order they are written in.
- */
-.washi-marked {
-  border-left: 3px solid var(--vermilion);
-}
-
 /* One shared focus treatment — never a 1px ring, never removed. */
 .focus-seal:focus-visible {
   outline: 2px solid var(--vermilion);

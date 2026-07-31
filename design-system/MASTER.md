@@ -142,7 +142,9 @@ that copies on tap, because it is plumbing rather than content. It polls
 itself into the next state; no other screen exists between creating a team
 and reading the report.
 
-`.washi-marked` flags the one row that belongs to the person looking.
+The roster does not mark "you". Without accounts the only signal is what this
+device typed, which is wrong whenever a teammate enters your details or one
+person enters several — so the app does not guess.
 
 ---
 

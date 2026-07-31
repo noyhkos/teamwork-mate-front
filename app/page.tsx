@@ -44,16 +44,9 @@ export default function Home() {
 
   return (
     <div className="space-y-8 pt-6">
-      <div className="space-y-3 text-center">
-        {/* 2xl until sm: at 320px the 3xl line overflowed onto a third row. */}
-        <h1 className="font-serif text-2xl font-bold leading-tight sm:text-3xl">
-          우리 팀, 사주×MBTI로<br />재미로 뜯어보기
-        </h1>
-        <p className="text-sm leading-relaxed text-ink-soft">
-          리더는 누구? 총무 체질은? 최고의 케미와 위험한 조합까지 —
-          만세력 기반으로 계산하고, 근거까지 보여드려요.
-        </p>
-      </div>
+      <h1 className="text-center font-serif text-3xl font-bold leading-tight">
+        사주 × MBTI<br />팀궁합 분석
+      </h1>
 
       <Card className="p-5">
         <form onSubmit={create} noValidate className="space-y-4">
