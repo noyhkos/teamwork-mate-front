@@ -67,10 +67,13 @@ and only reaches `text-4xl` at `sm:`.
 
 - **Radius — three rungs, nothing between.**
   `rounded-card` (3px) for cards and surfaces · `rounded-control` (8px) for
-  buttons, inputs, sheets · `rounded-full` for chips **and the single payoff
-  CTA** ("리포트 보러 가기"), which is shaped unlike every other control so it
-  reads as the end of the flow. No second pill button.
-  Paper is cut, not moulded.
+  buttons, inputs, sheets · `rounded-full` for chips **and the two seal
+  actions**. Paper is cut, not moulded.
+- **Seal actions.** The team page's two committing moments are round, because
+  pressing them is 도장을 찍는 것: 분석 시작 is a 112px ink circle that shows
+  `2/3 · 모이는 중` while the team is short, and 리포트 보러 가기 is a
+  vermilion pill. Nothing else on the site is round. Adding a third would
+  make roundness mean "button" again instead of "commit".
 - **Card** = `.washi rounded-card p-5`, via `<Card>`.
 - **Page chrome** — `mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10`.
 - **Bottom padding** on the last element of a scrolling surface uses

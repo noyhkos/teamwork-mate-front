@@ -139,11 +139,36 @@ export default function TeamPage() {
             </div>
           </Card>
         ) : (
-          <Button size="lg" full onClick={analyze} loading={analyzing} disabled={!ready}>
-            {!ready ? `${3 - team.memberCount}명 더 모이면 시작해요`
-              : team.status === "failed" ? "⟳ 다시 시도하기"
-              : "✨ 분석 시작"}
-          </Button>
+          // A round seal, not a bar. Pressing it is the one committing act on
+          // this screen, and a 도장 is what that gesture looks like here. The
+          // circle also holds the "not yet" state without changing shape — it
+          // shows how far off the team is instead of restating the rule.
+          <div className="flex justify-center py-2">
+            <button
+              type="button"
+              onClick={analyze}
+              disabled={!ready || analyzing}
+              aria-busy={analyzing || undefined}
+              aria-label={ready ? "분석 시작" : `3명부터 분석할 수 있어요. 지금 ${team.memberCount}명`}
+              className="focus-seal flex h-28 w-28 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full bg-ink text-paper transition-colors duration-150 disabled:cursor-not-allowed disabled:bg-ink/25 motion-reduce:transition-none enabled:hover:bg-ink/85"
+            >
+              {analyzing ? (
+                <span aria-hidden className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" />
+              ) : !ready ? (
+                <>
+                  <span className="font-serif text-2xl font-bold leading-none">{team.memberCount}/3</span>
+                  <span className="text-xs">모이는 중</span>
+                </>
+              ) : (
+                <>
+                  <span aria-hidden className="text-lg leading-none">✨</span>
+                  <span className="text-sm font-semibold">
+                    {team.status === "failed" ? "다시 시도" : "분석 시작"}
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
         )}
 
         {/* One row, tap anywhere to copy — the link is plumbing, not content. */}
