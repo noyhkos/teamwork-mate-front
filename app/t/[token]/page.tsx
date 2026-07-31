@@ -194,22 +194,25 @@ export default function TeamPage() {
       {error && <p role="alert" className="text-sm text-vermilion">{error}</p>}
 
       {/* The roster is the body of the page. */}
-      {team.members.length === 0 ? (
-        <Card className="p-6 text-center text-sm text-ink-soft">
-          아직 아무도 없어요.<br />먼저 내 정보를 넣어보세요.
-        </Card>
-      ) : (
-        <ul className="space-y-2">
-          {team.members.map((m) => (
-            <li key={m.nickname} className="washi rounded-card px-4 py-3">
-              <p className="font-serif text-base font-bold">{m.nickname}</p>
-              <p className="mt-0.5 text-xs text-ink-soft">
-                {m.birthDate} · {m.mbti}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="space-y-1.5">
+        <p className="text-xs text-ink-soft">팀원 목록</p>
+        {team.members.length === 0 ? (
+          <Card className="p-6 text-center text-sm text-ink-soft">
+            아직 아무도 없어요.<br />먼저 내 정보를 넣어보세요.
+          </Card>
+        ) : (
+          <ul className="space-y-2">
+            {team.members.map((m) => (
+              <li key={m.nickname} className="washi rounded-card px-4 py-3">
+                <p className="font-serif text-base font-bold">{m.nickname}</p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  {m.birthDate} · {m.mbti}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {!processing && (
         <Button variant="outline" size="lg" full onClick={() => setFormOpen(true)}>
