@@ -5,7 +5,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(parseError(body) ?? `요청 실패 (${res.status})`);
+    throw new Error(parseError(body) ?? "잠시 후 다시 시도해 주세요.");
   }
   // 204 carries no body; parsing it would throw on an empty string.
   return res.status === 204 ? (undefined as T) : res.json();
@@ -14,7 +14,10 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
 function parseError(body: string): string | null {
   try {
     const j = JSON.parse(body);
-    return j.message ?? j.error ?? null;
+    // `detail` is the api's own Korean reason (RFC 7807). Deliberately no
+    // fallback to `error`, which is always English HTTP jargon — "Conflict"
+    // told the reader nothing and looked like a crash.
+    return j.detail ?? j.message ?? null;
   } catch {
     return null;
   }

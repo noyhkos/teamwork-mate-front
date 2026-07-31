@@ -52,13 +52,30 @@ export default function TeamPage() {
     };
   }, [token]);
 
-  // The analysis runs on a worker; without polling this page would sit on
-  // "분석 중" until the visitor thinks to refresh.
+  /*
+   * This screen belongs to several phones at once: teammates join from their
+   * own devices and the analysis finishes on a worker. So it watches the team
+   * rather than trusting the copy it loaded with — fast while the worker runs,
+   * unhurried otherwise, and not at all while the tab is in the background.
+   */
   useEffect(() => {
-    if (team?.status !== "processing") return;
-    const timer = setInterval(load, 2000);
+    if (!team) return;
+    const every = team.status === "processing" ? 2000 : 5000;
+    const timer = setInterval(() => {
+      if (document.visibilityState === "visible") void load();
+    }, every);
     return () => clearInterval(timer);
-  }, [team?.status, load]);
+  }, [team, load]);
+
+  // Sending the invite means leaving for KakaoTalk; coming back should not
+  // show the roster as it was before.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [load]);
 
   function onAdded() {
     setFormOpen(false);
