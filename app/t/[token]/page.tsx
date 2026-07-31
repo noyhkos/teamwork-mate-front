@@ -188,10 +188,7 @@ export default function TeamPage() {
               role="status"
               aria-live="polite"
             >
-              {/* Shadowed so it stays legible when a glow drifts underneath. */}
-              <span className="relative z-10 text-sm font-semibold text-paper [text-shadow:0_1px_6px_rgba(38,34,28,0.9)]">
-                분석 중…
-              </span>
+              <span className="relative z-10 text-sm font-semibold text-ink">분석 중…</span>
             </div>
           </div>
         ) : (

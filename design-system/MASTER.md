@@ -77,11 +77,11 @@ and only reaches `text-4xl` at `sm:`.
   circle — a second one would make roundness mean "button" again instead of
   "commit". (`다시 분석` is the one exception, and only when the report has
   gone stale.)
-- **`.ohaeng-orb`** — the seal while the reading is cast. Warm glows burning to
-  paper-white at the core, lit onto ink with `mix-blend-mode: screen`, turning
-  at two speeds in opposite directions. Two rules it exists to remember: all
-  five obangsaek colours blurred together average to brown-grey, and glows wide
-  enough to overlap flatten the whole disc into one colour.
+- **`.ohaeng-orb`** — the seal while the reading is cast. Faint warm washes
+  spreading through a paper-white disc, turning at two speeds in opposite
+  directions. Two rules it exists to remember: all five obangsaek colours
+  blurred together average to brown-grey, and washes wide enough to overlap
+  flatten the whole disc into one colour.
 - **Card** = `.washi rounded-card p-5`, via `<Card>`.
 - **Page chrome** — `mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10`.
 - **Bottom padding** on the last element of a scrolling surface uses
