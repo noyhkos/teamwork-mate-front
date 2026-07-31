@@ -67,7 +67,9 @@ and only reaches `text-4xl` at `sm:`.
 
 - **Radius — three rungs, nothing between.**
   `rounded-card` (3px) for cards and surfaces · `rounded-control` (8px) for
-  buttons, inputs, sheets · `rounded-full` for chips.
+  buttons, inputs, sheets · `rounded-full` for chips **and the single payoff
+  CTA** ("리포트 보러 가기"), which is shaped unlike every other control so it
+  reads as the end of the flow. No second pill button.
   Paper is cut, not moulded.
 - **Card** = `.washi rounded-card p-5`, via `<Card>`.
 - **Page chrome** — `mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10`.

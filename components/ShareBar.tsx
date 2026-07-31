@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/button";
+import { copyText } from "@/lib/clipboard";
 
 /** Sharing is the whole point of the report, so it gets a first-class control. */
 export default function ShareBar({ title }: { title: string }) {
@@ -18,7 +19,7 @@ export default function ShareBar({ title }: { title: string }) {
         // user dismissed the sheet — fall through to copying
       }
     }
-    await navigator.clipboard.writeText(url);
+    if (!(await copyText(url))) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
   }

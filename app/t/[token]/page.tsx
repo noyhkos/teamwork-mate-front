@@ -7,7 +7,8 @@ import MemberForm from "@/components/MemberForm";
 import Button from "@/components/ui/button";
 import Card from "@/components/ui/card";
 import Sheet from "@/components/ui/sheet";
-import { api, type TeamView } from "@/lib/api";
+import { api, LAST_TEAM_KEY, type TeamView } from "@/lib/api";
+import { copyText } from "@/lib/clipboard";
 import { cx } from "@/lib/cx";
 import { setStored, useStored } from "@/lib/storage";
 
@@ -39,7 +40,11 @@ export default function TeamPage() {
     (async () => {
       try {
         const view = await api<TeamView>(`/teams/${token}`);
-        if (!cancelled) setTeam(view);
+        if (cancelled) return;
+        setTeam(view);
+        // Remember the team on arrival, not just on creation — otherwise the
+        // home button strands anyone who got here from someone else's link.
+        setStored(LAST_TEAM_KEY, JSON.stringify({ token, name: view.name }));
       } catch (err) {
         if (!cancelled) setError((err as Error).message);
       }
@@ -79,7 +84,10 @@ export default function TeamPage() {
   }
 
   async function copyLink() {
-    await navigator.clipboard.writeText(shareUrl);
+    if (!(await copyText(shareUrl))) {
+      setError("링크를 복사하지 못했어요. 주소창에서 직접 복사해 주세요.");
+      return;
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
@@ -95,18 +103,32 @@ export default function TeamPage() {
 
   return (
     <div className="space-y-5">
-      <header className="space-y-1">
-        <p className="text-tag uppercase text-vermilion">우리 팀</p>
+      {/* px-touch on both sides keeps the title optically centred on the page
+          while reserving the corner the home button sits in. */}
+      <header className="relative px-touch text-center">
+        <Link
+          href="/"
+          aria-label="홈으로"
+          className="focus-seal absolute right-0 top-0 flex h-touch w-touch items-center justify-center rounded-control text-ink-faint transition-colors duration-150 hover:text-ink motion-reduce:transition-none"
+        >
+          <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden
+            fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 8.6L10 3l7 5.6" />
+            <path d="M4.8 8v8.4h10.4V8" />
+          </svg>
+        </Link>
         <h1 className="font-serif text-2xl font-bold leading-tight">{team.name ?? "이름 없는 팀"}</h1>
-        <p className="text-sm text-ink-soft">{team.memberCount}명 참여 중</p>
+        <p className="mt-1 text-sm text-ink-soft">{team.memberCount}명 참여 중</p>
       </header>
 
       {/* The destination sits at the top: the roster below is the thing you scroll. */}
       <div className="space-y-2">
         {team.status === "done" && team.shareSlug ? (
+          // The one pill on the site: the payoff action, shaped unlike anything
+          // else so it reads as the end of the flow rather than another control.
           <Link
             href={`/r/${team.shareSlug}`}
-            className="focus-seal flex min-h-[3.25rem] w-full items-center justify-center rounded-control bg-vermilion text-base font-semibold text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
+            className="focus-seal flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-vermilion text-base font-semibold text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
           >
             🔮 리포트 보러 가기 →
           </Link>
@@ -133,13 +155,18 @@ export default function TeamPage() {
           aria-label="초대 링크 복사"
           className="focus-seal flex min-h-touch w-full cursor-pointer items-center gap-2 rounded-control border border-ink/20 bg-card px-3 text-left transition-colors duration-150 hover:border-ink/40 motion-reduce:transition-none"
         >
-          <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-ink-faint" aria-hidden
-            fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-            <path d="M8.5 11.5a3 3 0 004.2 0l2.6-2.6a3 3 0 10-4.2-4.2l-.9.9" />
-            <path d="M11.5 8.5a3 3 0 00-4.2 0l-2.6 2.6a3 3 0 104.2 4.2l.9-.9" />
+          {/* The label carries the meaning, so the row drops the link glyph and
+              spends the width on the URL instead. */}
+          <span className="shrink-0 text-xs font-semibold text-ink">팀원 초대하기</span>
+          <code className="min-w-0 flex-1 truncate text-xs text-ink-faint">{shortUrl}</code>
+          <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-vermilion" aria-hidden
+            fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            {copied
+              ? <path d="M4.5 10.5l3.5 3.5 7.5-7.5" />
+              : <><rect x="7" y="7" width="9" height="9" rx="1.5" /><path d="M13 4.5H5.5A1.5 1.5 0 004 6v7.5" /></>}
           </svg>
-          <code className="min-w-0 flex-1 truncate text-xs text-ink-soft">{shortUrl}</code>
-          <span className="shrink-0 text-xs font-semibold text-ink">{copied ? "복사됨" : "복사"}</span>
+          {/* The icon swap is silent to a screen reader; this announces it. */}
+          <span role="status" className="sr-only">{copied ? "링크가 복사됐어요" : ""}</span>
         </button>
       </div>
 
