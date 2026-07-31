@@ -4,18 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/button";
-import Card from "@/components/ui/card";
-import Field, { TextInput } from "@/components/ui/field";
+import { TextInput } from "@/components/ui/field";
 import { api, LAST_TEAM_KEY, type TeamCreated } from "@/lib/api";
 import { setStored, useStored } from "@/lib/storage";
 
-type LastTeam = { token: string; name: string | null };
+type LastTeam = { token: string; name: string };
 
 export default function Home() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
 
   // No accounts: the only trace of a team you made lives on this device.
   const lastRaw = useStored(LAST_TEAM_KEY);
@@ -23,14 +23,20 @@ export default function Home() {
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setNameError("팀 이름을 입력해 주세요.");
+      return;
+    }
+    setNameError(null);
     setBusy(true);
     setError(null);
     try {
       const created = await api<TeamCreated>("/teams", {
         method: "POST",
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name: trimmed }),
       });
-      setStored(LAST_TEAM_KEY, JSON.stringify({ token: created.token, name: name || null }));
+      setStored(LAST_TEAM_KEY, JSON.stringify({ token: created.token, name: trimmed }));
       // push, not replace: replacing dropped this page from history, so back
       // from the team page skipped the landing screen entirely and left the
       // site. Coming back here is harmless now — the team is saved, so the
@@ -44,28 +50,34 @@ export default function Home() {
 
   return (
     <div className="space-y-8 pt-6">
-      <h1 className="text-center font-serif text-3xl font-bold leading-tight">
-        사주 × MBTI<br />팀궁합 분석
+      <h1 className="text-center font-serif font-bold leading-tight">
+        <span className="block text-3xl">사주 × MBTI</span>
+        <span className="block text-2xl">팀궁합 분석</span>
       </h1>
 
-      <Card className="p-5">
-        <form onSubmit={create} noValidate className="space-y-4">
-          <Field label="팀 이름 (선택)">
-            {(aria) => (
-              <TextInput
-                {...aria}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="예: 돌잔치 기획팀"
-              />
-            )}
-          </Field>
-          {error && <p role="alert" className="text-sm text-vermilion">{error}</p>}
-          <Button type="submit" size="lg" full loading={busy}>
-            {busy ? "만드는 중…" : "팀 만들기"}
-          </Button>
-        </form>
-      </Card>
+      <form onSubmit={create} noValidate className="space-y-4">
+        {/* No visible label — the placeholder carries it, so the field keeps an
+            sr-only label rather than none at all. */}
+        <div className="space-y-1.5">
+          <label htmlFor="team-name" className="sr-only">팀 이름</label>
+          <TextInput
+            id="team-name"
+            value={name}
+            maxLength={40}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="팀 이름"
+            aria-invalid={nameError ? true : undefined}
+            aria-describedby={nameError ? "team-name-error" : undefined}
+          />
+          {nameError && (
+            <p id="team-name-error" role="alert" className="text-xs text-vermilion">{nameError}</p>
+          )}
+        </div>
+        {error && <p role="alert" className="text-sm text-vermilion">{error}</p>}
+        <Button type="submit" size="lg" full loading={busy} disabled={!name.trim()}>
+          {busy ? "만드는 중…" : "팀 생성"}
+        </Button>
+      </form>
 
       {last && (
         <Link
@@ -74,7 +86,7 @@ export default function Home() {
         >
           <span className="block text-xs text-ink-soft">최근에 만든 팀</span>
           <span className="mt-0.5 block text-sm font-semibold">
-            {last.name ?? "이름 없는 팀"} 이어서 하기 →
+            {last.name} 이어서 하기 →
           </span>
         </Link>
       )}

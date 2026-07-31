@@ -7,7 +7,7 @@ import Chip from "@/components/ui/chip";
 const API = process.env.API_BASE_URL ?? "http://localhost:8080";
 
 interface Report {
-  teamName: string | null;
+  teamName: string;
   archetype: string;
   archetypeDesc: string | null;
   intro: string | null;
@@ -39,7 +39,7 @@ async function getReport(slug: string): Promise<Report | null> {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const report = await getReport(slug);
-  const title = report ? `${report.teamName ?? "우리 팀"} — ${report.archetype}` : "팀 리포트";
+  const title = report ? `${report.teamName} — ${report.archetype}` : "팀 리포트";
   return {
     title,
     openGraph: { title, images: [`/api/reports/${slug}/card.png`] },
@@ -56,7 +56,7 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <p className="text-tag uppercase text-ink-soft">{report.teamName ?? "우리 팀"} · 팀 명식</p>
+        <p className="text-tag uppercase text-ink-soft">{report.teamName} · 팀 명식</p>
         <h1 className="font-serif text-3xl font-bold leading-tight sm:text-4xl">{report.archetype}</h1>
         {(report.intro ?? report.archetypeDesc) && (
           <p className="text-sm leading-relaxed text-ink-soft">{report.intro ?? report.archetypeDesc}</p>
@@ -158,7 +158,7 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
         </p>
       )}
 
-      <ShareBar title={`${report.teamName ?? "우리 팀"} — ${report.archetype}`} />
+      <ShareBar title={`${report.teamName} — ${report.archetype}`} />
 
       {/* The report is where most visitors first meet the service. */}
       <Link href="/"

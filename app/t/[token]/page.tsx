@@ -109,7 +109,7 @@ export default function TeamPage() {
             <path d="M12.5 4.5L7 10l5.5 5.5" />
           </svg>
         </Link>
-        <h1 className="font-serif text-2xl font-bold leading-tight">{team.name ?? "이름 없는 팀"}</h1>
+        <h1 className="font-serif text-2xl font-bold leading-tight">{team.name}</h1>
         <p className="mt-1 text-sm text-ink-soft">{team.memberCount}명 참여 중</p>
       </header>
 

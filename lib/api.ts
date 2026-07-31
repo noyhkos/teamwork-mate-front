@@ -32,7 +32,7 @@ export interface TeamMemberView {
 
 /** The one team view — everyone holding the link sees exactly this. */
 export interface TeamView {
-  name: string | null;
+  name: string;
   status: "collecting" | "ready" | "processing" | "done" | "failed";
   memberCount: number;
   members: TeamMemberView[];
