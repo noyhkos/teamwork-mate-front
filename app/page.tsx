@@ -86,7 +86,7 @@ export default function Home() {
         >
           <span className="block text-xs text-ink-soft">최근에 만든 팀</span>
           <span className="mt-0.5 block text-sm font-semibold">
-            {last.name} 이어서 하기 →
+            {last.name} →
           </span>
         </Link>
       )}
