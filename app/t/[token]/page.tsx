@@ -141,7 +141,7 @@ export default function TeamPage() {
         )}
 
         {/* One row, tap anywhere to copy — the link is plumbing, not content. */}
-        <p className="pt-1 text-xs font-medium text-ink-soft">팀원 초대하기</p>
+        <p className="pt-1 text-xs text-ink-soft">팀원 초대하기</p>
         <button
           type="button"
           onClick={copyLink}
