@@ -116,17 +116,20 @@ export default function TeamPage() {
       <div className="space-y-2">
         {team.status === "done" && team.shareSlug ? (
           <>
-            {/* The one pill on the site: the payoff action, shaped unlike
-                anything else so it reads as the end of the flow. */}
-            <Link
-              href={`/r/${team.shareSlug}`}
-              className="focus-seal flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-vermilion text-base font-semibold text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
-            >
-              🔮 리포트 보러 가기 →
-            </Link>
+            {/* The same seal as 분석 시작, now stamped: the circle stays put
+                across every state of this screen and only its face changes. */}
+            <div className="flex justify-center py-2">
+              <Link
+                href={`/r/${team.shareSlug}`}
+                className="focus-seal flex h-28 w-28 flex-col items-center justify-center gap-0.5 rounded-full bg-vermilion text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
+              >
+                <span aria-hidden className="text-lg leading-none">🔮</span>
+                <span className="text-sm font-semibold">분석 확인</span>
+              </Link>
+            </div>
             {/* A finished report is not the end: someone can still join, and
                 the report only counts them once it is run again. */}
-            <Button variant="outline" full onClick={analyze} loading={analyzing}>
+            <Button variant="quiet" full onClick={analyze} loading={analyzing}>
               ⟳ 멤버가 바뀌었다면 다시 분석
             </Button>
           </>

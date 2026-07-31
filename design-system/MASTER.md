@@ -69,11 +69,12 @@ and only reaches `text-4xl` at `sm:`.
   `rounded-card` (3px) for cards and surfaces · `rounded-control` (8px) for
   buttons, inputs, sheets · `rounded-full` for chips **and the two seal
   actions**. Paper is cut, not moulded.
-- **Seal actions.** The team page's two committing moments are round, because
-  pressing them is 도장을 찍는 것: 분석 시작 is a 112px ink circle that shows
-  `2/3 · 모이는 중` while the team is short, and 리포트 보러 가기 is a
-  vermilion pill. Nothing else on the site is round. Adding a third would
-  make roundness mean "button" again instead of "commit".
+- **The seal.** One 112px circle sits in the same place through every state of
+  the team page, and only its face changes: grey `2/3 · 모이는 중` while the
+  team is short, ink `✨ 분석 시작` once it is not, a spinner while the worker
+  runs, vermilion `🔮 분석 확인` when the report exists. Pressing it is 도장을
+  찍는 것, which is why it is round. Nothing else on the site is a circle —
+  a second one would make roundness mean "button" again instead of "commit".
 - **Card** = `.washi rounded-card p-5`, via `<Card>`.
 - **Page chrome** — `mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10`.
 - **Bottom padding** on the last element of a scrolling surface uses
