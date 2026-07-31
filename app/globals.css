@@ -124,6 +124,20 @@ input, select, textarea {
   outline-offset: 2px;
 }
 
+/*
+ * Select chevron. Drawn here rather than as a sibling element so a select can
+ * still be a flex child; the native arrow sits hard against the border and
+ * cannot be moved. Position mirrors the 12px horizontal padding.
+ */
+.select-chevron {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236d6558' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.125rem;
+}
+
 /* ── sheet motion ───────────────────────────────────────────── */
 
 @keyframes sheet-in {

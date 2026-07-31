@@ -65,7 +65,7 @@ export default function Field({
 
 /** Native select with the shared skin — keyboard and screen readers for free. */
 export function Select({ className, ...rest }: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select {...rest} className={cx(controlClass, "w-full appearance-none pr-8", className)} />;
+  return <select {...rest} className={cx(controlClass, "select-chevron w-full", className)} />;
 }
 
 export function TextInput({ className, ...rest }: React.InputHTMLAttributes<HTMLInputElement>) {

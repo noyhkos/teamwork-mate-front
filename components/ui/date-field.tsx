@@ -160,14 +160,16 @@ export default function DateField({
           <div
             role="dialog"
             aria-label="날짜 선택"
-            className="washi absolute left-0 right-0 top-full z-30 mt-2 rounded-card p-3"
+            // A calendar is calendar-sized. Stretching it to the field width made
+            // the year select 464px on desktop, with the text stranded at one edge.
+            className="washi absolute left-0 top-full z-30 mt-2 w-[min(20rem,100%)] rounded-card p-4"
           >
             <div className="flex gap-2">
               <select
                 value={view.y}
                 aria-label="연도"
                 onChange={(e) => setView((v) => ({ ...v, y: Number(e.target.value) }))}
-                className={cx(controlClass, "h-11 min-h-0 min-w-0 flex-1 px-2")}
+                className={cx(controlClass, "select-chevron h-11 min-h-0 min-w-0 flex-1")}
               >
                 {years.map((y) => (
                   <option key={y} value={y}>{y}년</option>

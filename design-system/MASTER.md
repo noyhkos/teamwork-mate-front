@@ -85,6 +85,11 @@ multi-column grid in the app is the calendar's 7-day week.
 - **Tap targets ≥ 44×44px.** Enforced by `min-h-touch` (`--spacing-touch`),
   which `Button`, `Select`, `TextInput` and `CheckboxRow` all carry. Height,
   not padding, holds the floor so short copy cannot shrink a control.
+  For a checkbox the target is the labelled row, not the 20px box.
+  **One exception:** calendar day cells. Seven columns cannot each be 44px
+  inside a 320px screen, so they land at ~29px — above the 24px WCAG 2.5.8
+  minimum, and the same compromise every date picker makes. Nothing else
+  may claim this exception.
 - **Controls render at 16px** (`input, select, textarea { font-size: 1rem }`).
   This is not a taste choice: iOS Safari zooms the whole page when a focused
   control is smaller, and never zooms back out. Visual scale comes from
@@ -152,6 +157,7 @@ between creating a team and reading the report.
 | Two-column form grid on a phone | Single column; `Segmented` for short choices |
 | `<input type="date">` | `<DateField>` — locale-independent `yyyy-mm-dd` |
 | Bare `<button>` with custom classes | `<Button>` |
+| The native `<select>` arrow (it sits hard against the border) | `.select-chevron` — drawn 12px in, mirroring the left padding |
 | `text-xs tracking-[0.35em]` | `text-tag` |
 | Raw hex / `rgba()` in a component | A colour token — the only exception is the swatch list on `/design-system`, which documents the hexes |
 | Emoji as an icon-only button label | Inline SVG + Korean `aria-label` |
