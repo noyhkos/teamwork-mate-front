@@ -21,11 +21,11 @@ function parseError(body: string): string | null {
 
 export interface TeamCreated {
   teamId: string;
-  inviteToken: string;
-  adminToken: string;
+  token: string;
 }
 
-export interface InviteView {
+/** The one team view — everyone holding the link sees exactly this. */
+export interface TeamView {
   name: string | null;
   status: "collecting" | "ready" | "processing" | "done" | "failed";
   memberCount: number;
@@ -33,18 +33,8 @@ export interface InviteView {
   shareSlug: string | null;
 }
 
-export interface AdminView extends Omit<InviteView, "memberCount" | "members"> {
-  inviteToken: string;
-  members: {
-    id: string;
-    nickname: string;
-    birthDate: string;
-    birthTime: string | null;
-    gender: string;
-    mbti: string;
-    enteredBy: string;
-  }[];
-}
+/** Last team created on this device, so the landing page can offer to resume. */
+export const LAST_TEAM_KEY = "twm:lastTeam";
 
 export interface MemberInput {
   nickname: string;

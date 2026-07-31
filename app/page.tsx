@@ -1,43 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { api, type TeamCreated } from "@/lib/api";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { api, LAST_TEAM_KEY, type TeamCreated } from "@/lib/api";
+import { setStored, useStored } from "@/lib/storage";
+
+type LastTeam = { token: string; name: string | null };
 
 export default function Home() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
-  const [created, setCreated] = useState<TeamCreated | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // No accounts: the only trace of a team you made lives on this device.
+  const lastRaw = useStored(LAST_TEAM_KEY);
+  const last: LastTeam | null = lastRaw ? JSON.parse(lastRaw) : null;
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
     try {
-      setCreated(await api<TeamCreated>("/teams", { method: "POST", body: JSON.stringify({ name }) }));
+      const created = await api<TeamCreated>("/teams", {
+        method: "POST",
+        body: JSON.stringify({ name }),
+      });
+      setStored(LAST_TEAM_KEY, JSON.stringify({ token: created.token, name: name || null }));
+      router.replace(`/t/${created.token}`);
     } catch (err) {
       setError((err as Error).message);
-    } finally {
       setBusy(false);
     }
-  }
-
-  if (created) {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const inviteUrl = `${origin}/t/${created.inviteToken}`;
-    const adminUrl = `${origin}/a/${created.adminToken}`;
-    return (
-      <div className="space-y-6">
-        <h1 className="font-serif text-2xl font-bold">팀이 만들어졌어요 🎉</h1>
-        <LinkCard title="👥 팀원 초대 링크" desc="팀원들에게 공유하세요. 각자 들어와서 자기 정보를 입력해요." url={inviteUrl} />
-        <LinkCard title="🔑 관리자 링크 (나만 보관!)" desc="분석 실행·멤버 관리는 이 링크로만 가능해요. 잃어버리면 복구할 수 없어요."
-          url={adminUrl} warn />
-        <a href={`/a/${created.adminToken}`}
-          className="block rounded-lg btn-ink py-3 text-center text-sm font-semibold">
-          관리자 화면으로 이동 →
-        </a>
-      </div>
-    );
   }
 
   return (
@@ -64,24 +59,15 @@ export default function Home() {
           {busy ? "만드는 중…" : "팀 만들기"}
         </button>
       </form>
-    </div>
-  );
-}
 
-function LinkCard({ title, desc, url, warn }: { title: string; desc: string; url: string; warn?: boolean }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <div className={`rounded-sm border p-5 ${warn ? "border-vermilion/50 bg-vermilion/5" : "border-ink/20 bg-card"}`}>
-      <h2 className="text-sm font-semibold">{title}</h2>
-      <p className="mt-1 text-xs text-ink-soft">{desc}</p>
-      <div className="mt-3 flex gap-2">
-        <code className="flex-1 truncate rounded-lg bg-paper-soft px-3 py-2 text-xs text-ink">{url}</code>
-        <button type="button"
-          onClick={async () => { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-          className="shrink-0 rounded-lg btn-ink px-3 py-2 text-xs">
-          {copied ? "복사됨!" : "복사"}
-        </button>
-      </div>
+      {last && (
+        <Link href={`/t/${last.token}`}
+          className="block rounded-sm border border-ink/20 bg-card p-4 text-center text-sm hover:border-vermilion">
+          <span className="text-ink-soft">최근에 만든 팀 </span>
+          <span className="font-semibold">{last.name ?? "이름 없는 팀"}</span>
+          <span className="text-ink-soft"> 이어서 하기 →</span>
+        </Link>
+      )}
     </div>
   );
 }

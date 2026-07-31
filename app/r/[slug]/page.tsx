@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ShareBar from "@/components/ShareBar";
 
 const API = process.env.API_BASE_URL ?? "http://localhost:8080";
@@ -138,10 +139,10 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
       <ShareBar title={`${report.teamName ?? "우리 팀"} — ${report.archetype}`} />
 
       {/* The report is where most visitors first meet the service. */}
-      <a href="/" className="block rounded-sm border border-ink/20 bg-card p-5 text-center hover:border-ink/40">
+      <Link href="/" className="block rounded-sm border border-ink/20 bg-card p-5 text-center hover:border-ink/40">
         <span className="font-serif text-sm font-bold">우리 팀도 뽑아볼까?</span>
         <span className="mt-1 block text-xs text-ink-soft">생일과 MBTI만 있으면 2분이면 돼요 →</span>
-      </a>
+      </Link>
     </div>
   );
 }

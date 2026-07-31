@@ -12,7 +12,7 @@ export default function MemberForm({
   endpoint,
   onAdded,
 }: {
-  endpoint: string; // /teams/invite/{t}/members or /teams/admin/{t}/members
+  endpoint: string; // /teams/{token}/members
   onAdded: (nickname: string) => void;
 }) {
   const [form, setForm] = useState<MemberInput>({
