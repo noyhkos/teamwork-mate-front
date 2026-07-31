@@ -91,7 +91,7 @@ export default function Home() {
             href={`/t/${last.token}`}
             className="focus-seal flex min-h-touch items-center justify-between gap-2 rounded-control border border-ink/20 bg-card px-3 transition-colors duration-150 hover:border-ink/40 motion-reduce:transition-none"
           >
-            <span className="min-w-0 truncate text-sm font-medium">{last.name}</span>
+            <span className="min-w-0 truncate text-sm">{last.name}</span>
             <span aria-hidden className="shrink-0 text-sm text-ink-soft">→</span>
           </Link>
         </div>
