@@ -2,7 +2,7 @@
 
 TeamworkMate의 웹 프론트엔드.
 
-🔗 **https://teamwork-mate.vercel.app**
+🔗 **https://teamsaju.com**
 
 👉 전체 프로젝트 설명은 [api 저장소](https://github.com/noyhkos/teamwork-mate-api)에 있습니다.
 

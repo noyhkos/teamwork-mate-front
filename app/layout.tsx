@@ -14,8 +14,15 @@ const maruburi = localFont({
 const body = Noto_Sans_KR({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
-  title: "TeamworkMate — 재미로 보는 팀 사주×MBTI",
+  // Report pages set a relative OG image; without a base it cannot be resolved
+  // to the absolute URL that link previews require.
+  metadataBase: new URL("https://teamsaju.com"),
+  title: "팀사주 — 재미로 보는 팀 사주×MBTI",
   description: "팀원들의 사주와 MBTI를 조합해 역할 추천, 케미, 팀 밸런스를 알려주는 재미용 리포트",
+  openGraph: {
+    siteName: "팀사주",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
