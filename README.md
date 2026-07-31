@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# teamwork-mate · front
 
-## Getting Started
+TeamworkMate의 웹 프론트엔드.
 
-First, run the development server:
+👉 전체 프로젝트 설명은 [api 저장소](https://github.com/noyhkos/teamwork-mate-api)에 있습니다.
+
+## 화면
+
+| 경로 | 용도 |
+|---|---|
+| `/` | 팀 생성 + 초대 링크 복사 |
+| `/t/[invite]` | 팀원 본인 입력 (생일·MBTI, "시간 몰라요" 토글) |
+| `/a/[admin]` | 관리자 — 대리 입력, 분석 실행, 진행 상태 폴링 |
+| `/r/[slug]` | 공개 리포트 (서버 컴포넌트, OG 카드 메타 포함) |
+
+## 디자인
+
+**한지 × 먹 × 오방색.** 사주라는 소재에 맞춰 종이 질감의 배경(`#f6f0e1`)과 먹색 본문, 낙관을 연상시키는 주색(`#c3402b`) 포인트로 구성했습니다. 오행 다섯 색은 헤더 괘선과 원소 배지에 쓰입니다. 본문은 Noto Sans KR, 제목은 MaruBuri 세리프.
+
+## 비동기 분석 처리
+
+`POST /analyze`가 `202`를 반환하고 실제 작업은 워커가 처리하므로, 관리자 화면은 상태가 `processing`인 동안 2초 간격으로 폴링하다가 완료되면 리포트 링크를 띄웁니다.
+
+## 실행
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`/api` 요청은 `next.config.ts`의 rewrite로 백엔드에 프록시됩니다. 백엔드 주소는 `API_BASE_URL` 환경변수로 바꿀 수 있습니다 (기본 `http://localhost:8080`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+API_BASE_URL=https://<lambda-function-url> npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 스택
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js 16 (App Router) · Tailwind CSS v4 · TypeScript
