@@ -31,7 +31,11 @@ export default function Home() {
         body: JSON.stringify({ name }),
       });
       setStored(LAST_TEAM_KEY, JSON.stringify({ token: created.token, name: name || null }));
-      router.replace(`/t/${created.token}`);
+      // push, not replace: replacing dropped this page from history, so back
+      // from the team page skipped the landing screen entirely and left the
+      // site. Coming back here is harmless now — the team is saved, so the
+      // page offers to resume it.
+      router.push(`/t/${created.token}`);
     } catch (err) {
       setError((err as Error).message);
       setBusy(false);

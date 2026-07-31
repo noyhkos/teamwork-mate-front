@@ -149,15 +149,13 @@ export default function TeamPage() {
         )}
 
         {/* One row, tap anywhere to copy — the link is plumbing, not content. */}
+        <p className="pt-1 text-xs font-medium text-ink-soft">팀원 초대하기</p>
         <button
           type="button"
           onClick={copyLink}
           aria-label="초대 링크 복사"
           className="focus-seal flex min-h-touch w-full cursor-pointer items-center gap-2 rounded-control border border-ink/20 bg-card px-3 text-left transition-colors duration-150 hover:border-ink/40 motion-reduce:transition-none"
         >
-          {/* The label carries the meaning, so the row drops the link glyph and
-              spends the width on the URL instead. */}
-          <span className="shrink-0 text-xs font-semibold text-ink">팀원 초대하기</span>
           <code className="min-w-0 flex-1 truncate text-xs text-ink-faint">{shortUrl}</code>
           <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-vermilion" aria-hidden
             fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
