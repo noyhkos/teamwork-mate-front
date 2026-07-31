@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="팀사주">
+  <!--
+    The 오행 five-colour rule, squared off. It is the mark that already runs
+    across the top of every page, so a tab shows the same thing the site does.
+    Full bleed rather than inset: at 16px an inset would leave each band under
+    3px wide, and solid edge-to-edge bands survive that size.
+  -->
+  <defs>
+    <clipPath id="tile">
+      <rect width="32" height="32" rx="7" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect x="0" width="6.4" height="32" fill="#3f6d54" />
+    <rect x="6.4" width="6.4" height="32" fill="#c3402b" />
+    <rect x="12.8" width="6.4" height="32" fill="#c08a2d" />
+    <rect x="19.2" width="6.4" height="32" fill="#8e8a7e" />
+    <rect x="25.6" width="6.4" height="32" fill="#33506b" />
+  </g>
+</svg>

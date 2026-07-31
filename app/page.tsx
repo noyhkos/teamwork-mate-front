@@ -60,35 +60,39 @@ export default function Home() {
             sr-only label rather than none at all. */}
         <div className="space-y-1.5">
           <label htmlFor="team-name" className="sr-only">팀 이름</label>
-          <TextInput
-            id="team-name"
-            value={name}
-            maxLength={40}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="팀 이름"
-            aria-invalid={nameError ? true : undefined}
-            aria-describedby={nameError ? "team-name-error" : undefined}
-          />
+          <div className="flex gap-2">
+            <TextInput
+              id="team-name"
+              value={name}
+              maxLength={40}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="팀 이름"
+              aria-invalid={nameError ? true : undefined}
+              aria-describedby={nameError ? "team-name-error" : undefined}
+              className="min-w-0 flex-1"
+            />
+            <Button type="submit" className="shrink-0" loading={busy} disabled={!name.trim()}>
+              생성
+            </Button>
+          </div>
           {nameError && (
             <p id="team-name-error" role="alert" className="text-xs text-vermilion">{nameError}</p>
           )}
         </div>
         {error && <p role="alert" className="text-sm text-vermilion">{error}</p>}
-        <Button type="submit" size="lg" full loading={busy} disabled={!name.trim()}>
-          {busy ? "만드는 중…" : "팀 생성"}
-        </Button>
       </form>
 
       {last && (
-        <Link
-          href={`/t/${last.token}`}
-          className="focus-seal block rounded-card border border-ink/20 bg-card px-4 py-3 text-center hover:border-vermilion"
-        >
-          <span className="block text-xs text-ink-soft">최근에 만든 팀</span>
-          <span className="mt-0.5 block text-sm font-semibold">
-            {last.name} →
-          </span>
-        </Link>
+        <div className="space-y-1.5">
+          <p className="text-xs font-medium text-ink-soft">최근에 만든 팀</p>
+          <Link
+            href={`/t/${last.token}`}
+            className="focus-seal flex min-h-touch items-center justify-between gap-2 rounded-control border border-ink/20 bg-card px-3 transition-colors duration-150 hover:border-ink/40 motion-reduce:transition-none"
+          >
+            <span className="min-w-0 truncate text-sm font-semibold">{last.name}</span>
+            <span aria-hidden className="shrink-0 text-sm text-ink-soft">→</span>
+          </Link>
+        </div>
       )}
     </div>
   );
