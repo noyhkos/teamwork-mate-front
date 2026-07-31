@@ -88,7 +88,6 @@ export default function TeamPage() {
   if (error && !team) return <p className="pt-10 text-center text-vermilion">{error}</p>;
   if (!team) return <p className="pt-10 text-center text-ink-soft">불러오는 중…</p>;
 
-  const collecting = team.status === "collecting";
   const processing = team.status === "processing";
   // Mirrors MIN_MEMBERS on the api — three core roles need three people.
   const ready = team.memberCount >= 3;
@@ -116,14 +115,21 @@ export default function TeamPage() {
       {/* The destination sits at the top: the roster below is the thing you scroll. */}
       <div className="space-y-2">
         {team.status === "done" && team.shareSlug ? (
-          // The one pill on the site: the payoff action, shaped unlike anything
-          // else so it reads as the end of the flow rather than another control.
-          <Link
-            href={`/r/${team.shareSlug}`}
-            className="focus-seal flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-vermilion text-base font-semibold text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
-          >
-            🔮 리포트 보러 가기 →
-          </Link>
+          <>
+            {/* The one pill on the site: the payoff action, shaped unlike
+                anything else so it reads as the end of the flow. */}
+            <Link
+              href={`/r/${team.shareSlug}`}
+              className="focus-seal flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-vermilion text-base font-semibold text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
+            >
+              🔮 리포트 보러 가기 →
+            </Link>
+            {/* A finished report is not the end: someone can still join, and
+                the report only counts them once it is run again. */}
+            <Button variant="outline" full onClick={analyze} loading={analyzing}>
+              ⟳ 멤버가 바뀌었다면 다시 분석
+            </Button>
+          </>
         ) : processing ? (
           <Card className="p-4 text-center">
             <p className="font-serif text-sm font-bold">명식을 짓는 중…</p>
@@ -136,7 +142,7 @@ export default function TeamPage() {
           <Button size="lg" full onClick={analyze} loading={analyzing} disabled={!ready}>
             {!ready ? `${3 - team.memberCount}명 더 모이면 시작해요`
               : team.status === "failed" ? "⟳ 다시 시도하기"
-              : `✨ ${team.memberCount}명으로 리포트 생성`}
+              : "✨ 분석 시작"}
           </Button>
         )}
 
@@ -180,7 +186,7 @@ export default function TeamPage() {
         </ul>
       )}
 
-      {collecting && (
+      {!processing && (
         <Button variant="outline" size="lg" full onClick={() => setFormOpen(true)}>
           + 멤버 추가하기
         </Button>
