@@ -109,12 +109,11 @@ export default function TeamPage() {
         <Link
           href="/"
           aria-label="홈으로"
-          className="focus-seal absolute right-0 top-0 flex h-touch w-touch items-center justify-center rounded-control text-ink-faint transition-colors duration-150 hover:text-ink motion-reduce:transition-none"
+          className="focus-seal absolute left-0 top-0 flex h-touch w-touch items-center justify-center rounded-control text-ink-faint transition-colors duration-150 hover:text-ink motion-reduce:transition-none"
         >
           <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden
-            fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 8.6L10 3l7 5.6" />
-            <path d="M4.8 8v8.4h10.4V8" />
+            fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12.5 4.5L7 10l5.5 5.5" />
           </svg>
         </Link>
         <h1 className="font-serif text-2xl font-bold leading-tight">{team.name ?? "이름 없는 팀"}</h1>
