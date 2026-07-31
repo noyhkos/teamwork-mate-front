@@ -89,7 +89,8 @@ export default function TeamPage() {
 
   const collecting = team.status === "collecting";
   const processing = team.status === "processing";
-  const ready = team.memberCount >= 2;
+  // Mirrors MIN_MEMBERS on the api — three core roles need three people.
+  const ready = team.memberCount >= 3;
 
   return (
     <div className="space-y-6">
@@ -161,7 +162,7 @@ export default function TeamPage() {
             loading={analyzing}
             disabled={!ready}
           >
-            {!ready ? "멤버가 2명 이상 모이면 분석할 수 있어요"
+            {!ready ? `멤버 3명부터 분석할 수 있어요 (지금 ${team.memberCount}명)`
               : team.status === "done" ? "⟳ 다시 분석하기"
               : team.status === "failed" ? "⟳ 다시 시도하기"
               : `✨ ${team.memberCount}명으로 리포트 생성`}
