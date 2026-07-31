@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/components/ui/button";
 
 /** Sharing is the whole point of the report, so it gets a first-class control. */
 export default function ShareBar({ title }: { title: string }) {
@@ -23,9 +24,8 @@ export default function ShareBar({ title }: { title: string }) {
   }
 
   return (
-    <button onClick={share}
-      className="w-full rounded-sm btn-ink py-3 text-sm font-semibold">
+    <Button size="lg" full onClick={share}>
       {copied ? "링크가 복사됐어요" : "이 리포트 공유하기"}
-    </button>
+    </Button>
   );
 }

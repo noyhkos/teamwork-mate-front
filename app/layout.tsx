@@ -34,8 +34,8 @@ export default function RootLayout({
     <html lang="ko" className={`${maruburi.variable} ${body.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
         <div className="ohaeng-rule" aria-hidden><i /><i /><i /><i /><i /></div>
-        <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-10">{children}</main>
-        <footer className="py-6 text-center text-xs text-ink-faint">
+        <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6 sm:py-10">{children}</main>
+        <footer className="px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-6 text-center text-xs text-ink-faint">
           teamwork-mate · 전통 이론을 참고한 재미용 해석입니다
         </footer>
       </body>
