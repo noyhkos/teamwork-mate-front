@@ -137,8 +137,9 @@ export default function TeamPage() {
           className="focus-seal absolute left-0 top-0 flex h-touch w-touch items-center justify-center rounded-control text-ink-faint transition-colors duration-150 hover:text-ink motion-reduce:transition-none"
         >
           <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden
-            fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12.5 4.5L7 10l5.5 5.5" />
+            fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 8.6L10 3l7 5.6" />
+            <path d="M4.8 8v8.4h10.4V8" />
           </svg>
         </Link>
         <h1 className="font-serif text-2xl font-bold leading-tight">{team.name}</h1>
@@ -180,13 +181,19 @@ export default function TeamPage() {
             </Link>
           </div>
         ) : processing ? (
-          <Card className="p-4 text-center">
-            <p className="font-serif text-sm font-bold">명식을 짓는 중…</p>
-            <p className="mt-1 text-xs text-ink-soft">완료되면 이 화면이 알아서 바뀌어요</p>
-            <div className="ohaeng-rule mt-3 animate-pulse motion-reduce:animate-none" aria-hidden>
-              <i /><i /><i /><i /><i />
+          // The seal keeps its place and turns into the reading itself.
+          <div className="flex justify-center py-2">
+            <div
+              className="ohaeng-orb flex h-28 w-28 items-center justify-center"
+              role="status"
+              aria-live="polite"
+            >
+              {/* Shadowed so it stays legible when a glow drifts underneath. */}
+              <span className="relative z-10 text-sm font-semibold text-paper [text-shadow:0_1px_6px_rgba(38,34,28,0.9)]">
+                분석 중…
+              </span>
             </div>
-          </Card>
+          </div>
         ) : (
           // A round seal, not a bar. Pressing it is the one committing act on
           // this screen, and a 도장 is what that gesture looks like here. The

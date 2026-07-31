@@ -71,10 +71,17 @@ and only reaches `text-4xl` at `sm:`.
   actions**. Paper is cut, not moulded.
 - **The seal.** One 112px circle sits in the same place through every state of
   the team page, and only its face changes: grey `2/3 · 모이는 중` while the
-  team is short, ink `✨ 분석 시작` once it is not, a spinner while the worker
-  runs, vermilion `🔮 분석 확인` when the report exists. Pressing it is 도장을
-  찍는 것, which is why it is round. Nothing else on the site is a circle —
-  a second one would make roundness mean "button" again instead of "commit".
+  team is short, ink `✨ 분석 시작` once it is not, `.ohaeng-orb` while the
+  worker runs, vermilion `🔮 분석 확인` when the report exists. Pressing it is
+  도장을 찍는 것, which is why it is round. Nothing else on the site is a
+  circle — a second one would make roundness mean "button" again instead of
+  "commit". (`다시 분석` is the one exception, and only when the report has
+  gone stale.)
+- **`.ohaeng-orb`** — the seal while the reading is cast. Warm glows burning to
+  paper-white at the core, lit onto ink with `mix-blend-mode: screen`, turning
+  at two speeds in opposite directions. Two rules it exists to remember: all
+  five obangsaek colours blurred together average to brown-grey, and glows wide
+  enough to overlap flatten the whole disc into one colour.
 - **Card** = `.washi rounded-card p-5`, via `<Card>`.
 - **Page chrome** — `mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10`.
 - **Bottom padding** on the last element of a scrolling surface uses

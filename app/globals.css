@@ -118,6 +118,75 @@ input, select, textarea {
   box-shadow: 2px 3px 0 rgba(38, 34, 28, 0.06);
 }
 
+/*
+ * The seal while the reading is being cast: 오행 colours bleeding into each
+ * other inside the circle. Two conic gradients, blurred past recognition and
+ * turning at different speeds in opposite directions, so the surface never
+ * repeats — closer to ink spreading in water than to a spinner. Reduced
+ * motion leaves the colours in place and stops everything.
+ */
+@keyframes ohaeng-turn {
+  to { transform: rotate(360deg); }
+}
+@keyframes ohaeng-breathe {
+  0%, 100% { opacity: 0.82; }
+  50% { opacity: 1; }
+}
+
+.ohaeng-orb {
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  /* Ink, like the idle seal — so the circle darkens rather than changing
+     material when the reading starts. */
+  background: var(--ink);
+  /* Bloom spilling onto the page, as a real light source would. */
+  box-shadow: 0 0 38px rgba(195, 64, 43, 0.32);
+  animation: ohaeng-breathe 4s ease-in-out infinite;
+}
+.ohaeng-orb::before,
+.ohaeng-orb::after {
+  content: "";
+  position: absolute;
+  /* Overscanned so a rotating edge never crosses the rim. */
+  inset: -35%;
+  border-radius: 9999px;
+  /* Lit onto the ink rather than mixed into it. */
+  mix-blend-mode: screen;
+  animation: ohaeng-turn 9s linear infinite;
+}
+/*
+ * Small, separated glows rather than a wash. Two constraints learned the hard
+ * way: all five obangsaek colours blurred together average to brown-grey
+ * (they are deliberately desaturated), and blobs wide enough to overlap turn
+ * the whole disc one flat colour. Keeping them tight leaves ink between them,
+ * so the circle reads as light moving in darkness.
+ */
+/*
+ * Each glow burns to paper-white at its core and falls off through its colour,
+ * so it reads as a light rather than a patch of fog — hanji lit from behind
+ * the ink.
+ */
+.ohaeng-orb::before {
+  background:
+    radial-gradient(30% 30% at 33% 30%, var(--paper) 0%, var(--vermilion) 42%, transparent 72%),
+    radial-gradient(24% 24% at 70% 68%, var(--paper) 0%, var(--earth) 44%, transparent 70%);
+  filter: blur(8px);
+}
+.ohaeng-orb::after {
+  background: radial-gradient(26% 26% at 66% 30%, var(--paper) 0%, var(--vermilion) 48%, transparent 72%);
+  filter: blur(10px);
+  opacity: 0.8;
+  animation-duration: 15s;
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ohaeng-orb,
+  .ohaeng-orb::before,
+  .ohaeng-orb::after { animation: none; }
+}
+
 /* One shared focus treatment — never a 1px ring, never removed. */
 .focus-seal:focus-visible {
   outline: 2px solid var(--vermilion);
