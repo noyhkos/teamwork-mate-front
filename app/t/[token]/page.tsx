@@ -18,6 +18,8 @@ export default function TeamPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [copied, setCopied] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/t/${token}` : "";
 
@@ -61,6 +63,20 @@ export default function TeamPage() {
   function onAdded() {
     setFormOpen(false);
     void load();
+  }
+
+  async function removeMember(memberId: string) {
+    setRemovingId(memberId);
+    setError(null);
+    try {
+      await api(`/teams/${token}/members/${memberId}`, { method: "DELETE" });
+      setConfirmingId(null);
+      await load();
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setRemovingId(null);
+    }
   }
 
   async function analyze() {
@@ -115,24 +131,37 @@ export default function TeamPage() {
       {/* The destination sits at the top: the roster below is the thing you scroll. */}
       <div className="space-y-2">
         {team.status === "done" && team.shareSlug ? (
-          <>
-            {/* The same seal as 분석 시작, now stamped: the circle stays put
-                across every state of this screen and only its face changes. */}
-            <div className="flex justify-center py-2">
-              <Link
-                href={`/r/${team.shareSlug}`}
-                className="focus-seal flex h-28 w-28 flex-col items-center justify-center gap-0.5 rounded-full bg-vermilion text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
+          // The same seal as 분석 시작, now stamped. When the roster has moved
+          // on without the report, a smaller one joins it on the left — the
+          // api decides that, since the change comes from other people's
+          // devices rather than this one.
+          <div className="flex items-center justify-center gap-4 py-2">
+            {team.staleReport && (
+              <button
+                type="button"
+                onClick={analyze}
+                disabled={analyzing}
+                aria-busy={analyzing || undefined}
+                className="focus-seal flex h-[5.5rem] w-[5.5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-full border border-ink/25 bg-card text-ink transition-colors duration-150 hover:bg-paper-soft disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transition-none"
               >
-                <span aria-hidden className="text-lg leading-none">🔮</span>
-                <span className="text-sm font-semibold">분석 확인</span>
-              </Link>
-            </div>
-            {/* A finished report is not the end: someone can still join, and
-                the report only counts them once it is run again. */}
-            <Button variant="quiet" full onClick={analyze} loading={analyzing}>
-              ⟳ 멤버가 바뀌었다면 다시 분석
-            </Button>
-          </>
+                {analyzing ? (
+                  <span aria-hidden className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" />
+                ) : (
+                  <>
+                    <span aria-hidden className="text-base leading-none">⟳</span>
+                    <span className="text-xs font-semibold">다시 분석</span>
+                  </>
+                )}
+              </button>
+            )}
+            <Link
+              href={`/r/${team.shareSlug}`}
+              className="focus-seal flex h-28 w-28 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full bg-vermilion text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
+            >
+              <span aria-hidden className="text-lg leading-none">🔮</span>
+              <span className="text-sm font-semibold">분석 확인</span>
+            </Link>
+          </div>
         ) : processing ? (
           <Card className="p-4 text-center">
             <p className="font-serif text-sm font-bold">명식을 짓는 중…</p>
@@ -206,11 +235,47 @@ export default function TeamPage() {
         ) : (
           <ul className="space-y-2">
             {team.members.map((m) => (
-              <li key={m.nickname} className="washi rounded-card px-4 py-3">
-                <p className="font-serif text-base font-bold">{m.nickname}</p>
-                <p className="mt-0.5 text-xs text-ink-soft">
-                  {m.birthDate} · {m.mbti}
-                </p>
+              <li key={m.id} className="washi flex items-center gap-2 rounded-card py-2 pl-4 pr-2">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-serif text-base font-bold">{m.nickname}</p>
+                  <p className="mt-0.5 text-xs text-ink-soft">
+                    {m.birthDate} · {m.mbti}
+                  </p>
+                </div>
+                {confirmingId === m.id ? (
+                  // Two taps, no dialog: someone else's details are easy to
+                  // delete by accident on a phone, and a modal for one row is
+                  // heavier than the action deserves.
+                  <div className="flex shrink-0 items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingId(null)}
+                      className="focus-seal min-h-touch cursor-pointer rounded-control px-2 text-xs text-ink-soft"
+                    >
+                      취소
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeMember(m.id)}
+                      disabled={removingId === m.id}
+                      className="focus-seal min-h-touch cursor-pointer rounded-control px-2 text-xs font-semibold text-vermilion disabled:opacity-40"
+                    >
+                      {removingId === m.id ? "삭제 중" : "삭제"}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmingId(m.id)}
+                    aria-label={`${m.nickname} 삭제`}
+                    className="focus-seal flex h-touch w-touch shrink-0 cursor-pointer items-center justify-center rounded-control text-ink-faint transition-colors duration-150 hover:text-vermilion motion-reduce:transition-none"
+                  >
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden
+                      fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 6h12M8 6V4.5h4V6M6 6l.7 9.5h6.6L14 6" />
+                    </svg>
+                  </button>
+                )}
               </li>
             ))}
           </ul>

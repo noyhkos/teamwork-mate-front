@@ -7,7 +7,8 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     const body = await res.text().catch(() => "");
     throw new Error(parseError(body) ?? `요청 실패 (${res.status})`);
   }
-  return res.json();
+  // 204 carries no body; parsing it would throw on an empty string.
+  return res.status === 204 ? (undefined as T) : res.json();
 }
 
 function parseError(body: string): string | null {
@@ -25,6 +26,7 @@ export interface TeamCreated {
 }
 
 export interface TeamMemberView {
+  id: string;
   nickname: string;
   birthDate: string; // yyyy-mm-dd
   mbti: string;
@@ -37,6 +39,8 @@ export interface TeamView {
   memberCount: number;
   members: TeamMemberView[];
   shareSlug: string | null;
+  /** Someone joined after the report was built, so it is out of date. */
+  staleReport: boolean;
 }
 
 /** Last team created on this device, so the landing page can offer to resume. */
