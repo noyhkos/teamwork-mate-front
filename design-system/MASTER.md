@@ -128,13 +128,19 @@ multi-column grid in the app is the calendar's 7-day week.
 | Surface | Shape |
 |---|---|
 | `/` landing | Centred headline, one card with the create form, optional "이어서 하기" |
-| `/t/[token]` team | Six blocks in order: name · share link · member list · add · generate · view |
+| `/t/[token]` team | Header · state slot · compact link row · roster · add |
 | `/r/[slug]` report | Long scroll: header, share card, harmony, ranked roles, pairs, balance, CTA |
 | `/design-system` | This system, rendered |
 
-The team page is the waiting room. Everything a holder of the link can do is
-on it, and it polls itself into the next state — no other screen exists
-between creating a team and reading the report.
+The team page is the waiting room. The **roster is the body of the page** — a
+vertical stack of member cards, not chips — and a single slot above it holds
+whichever state the team is in: the generate button, the "명식을 짓는 중"
+card, or the link to the finished report. The invite link is one 44px row
+that copies on tap, because it is plumbing rather than content. It polls
+itself into the next state; no other screen exists between creating a team
+and reading the report.
+
+`.washi-marked` flags the one row that belongs to the person looking.
 
 ---
 

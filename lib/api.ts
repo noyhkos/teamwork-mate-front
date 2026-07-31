@@ -24,12 +24,18 @@ export interface TeamCreated {
   token: string;
 }
 
+export interface TeamMemberView {
+  nickname: string;
+  birthDate: string; // yyyy-mm-dd
+  mbti: string;
+}
+
 /** The one team view — everyone holding the link sees exactly this. */
 export interface TeamView {
   name: string | null;
   status: "collecting" | "ready" | "processing" | "done" | "failed";
   memberCount: number;
-  members: string[];
+  members: TeamMemberView[];
   shareSlug: string | null;
 }
 

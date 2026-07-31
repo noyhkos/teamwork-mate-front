@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import MemberForm from "@/components/MemberForm";
 import Button from "@/components/ui/button";
-import Card, { SectionTitle } from "@/components/ui/card";
-import Chip from "@/components/ui/chip";
+import Card from "@/components/ui/card";
 import Sheet from "@/components/ui/sheet";
 import { api, type TeamView } from "@/lib/api";
+import { cx } from "@/lib/cx";
 import { setStored, useStored } from "@/lib/storage";
 
 export default function TeamPage() {
@@ -91,93 +91,92 @@ export default function TeamPage() {
   const processing = team.status === "processing";
   // Mirrors MIN_MEMBERS on the api — three core roles need three people.
   const ready = team.memberCount >= 3;
+  const shortUrl = shareUrl.replace(/^https?:\/\//, "");
 
   return (
-    <div className="space-y-6">
-      {/* 1 · 팀 이름 */}
+    <div className="space-y-5">
       <header className="space-y-1">
         <p className="text-tag uppercase text-vermilion">우리 팀</p>
         <h1 className="font-serif text-2xl font-bold leading-tight">{team.name ?? "이름 없는 팀"}</h1>
-        <p className="text-sm text-ink-soft">{team.memberCount}명 입력 완료</p>
+        <p className="text-sm text-ink-soft">{team.memberCount}명 참여 중</p>
       </header>
 
-      {/* 2 · 공유 링크 */}
-      <Card className="space-y-2">
-        <p className="text-xs text-ink-soft">이 링크를 팀원에게 보내세요. 각자 들어와서 자기 정보를 입력해요.</p>
-        <div className="flex gap-2">
-          <code className="min-w-0 flex-1 truncate rounded-control bg-paper-soft px-3 py-2.5 text-xs text-ink">
-            {shareUrl}
-          </code>
-          <Button variant="outline" onClick={copyLink} aria-label="공유 링크 복사">
-            {copied ? "복사됨" : "복사"}
-          </Button>
-        </div>
-      </Card>
-
-      {/* 3 · 팀 멤버 목록 */}
-      <section className="space-y-3">
-        <SectionTitle eyebrow="members">팀 멤버</SectionTitle>
-        {team.members.length === 0 ? (
-          <p className="text-sm text-ink-soft">아직 아무도 없어요. 먼저 내 정보를 넣어보세요.</p>
-        ) : (
-          <ul className="flex flex-wrap gap-2">
-            {team.members.map((n) => (
-              <li key={n}>
-                <Chip tone={n === myNickname ? "seal" : "plain"}>
-                  {n}
-                  {n === myNickname && <span className="text-[0.6875rem]">· 나</span>}
-                </Chip>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      {error && <p role="alert" className="text-sm text-vermilion">{error}</p>}
-
-      {/* 4·5·6 · 추가하기 / 리포트 생성 / 리포트 보기 */}
-      <div className="space-y-2.5">
-        {collecting && (
-          <Button variant="outline" size="lg" full onClick={() => setFormOpen(true)}>
-            + 멤버 추가하기
-          </Button>
-        )}
-
-        {processing ? (
-          <Card className="text-center">
-            <p className="font-serif text-sm font-bold">명식을 짓는 중…</p>
-            <p className="mt-1 text-xs text-ink-soft">
-              사주 계산 · 궁합 · 역할 배정 · 문구 생성. 완료되면 이 화면이 알아서 바뀌어요.
-            </p>
-            <div className="ohaeng-rule mt-4 animate-pulse motion-reduce:animate-none" aria-hidden>
-              <i /><i /><i /><i /><i />
-            </div>
-          </Card>
-        ) : (
-          <Button
-            variant={team.status === "done" ? "outline" : "primary"}
-            size="lg"
-            full
-            onClick={analyze}
-            loading={analyzing}
-            disabled={!ready}
-          >
-            {!ready ? `멤버 3명부터 분석할 수 있어요 (지금 ${team.memberCount}명)`
-              : team.status === "done" ? "⟳ 다시 분석하기"
-              : team.status === "failed" ? "⟳ 다시 시도하기"
-              : `✨ ${team.memberCount}명으로 리포트 생성`}
-          </Button>
-        )}
-
-        {team.status === "done" && team.shareSlug && (
+      {/* The destination sits at the top: the roster below is the thing you scroll. */}
+      <div className="space-y-2">
+        {team.status === "done" && team.shareSlug ? (
           <Link
             href={`/r/${team.shareSlug}`}
             className="focus-seal flex min-h-[3.25rem] w-full items-center justify-center rounded-control bg-vermilion text-base font-semibold text-paper transition-colors duration-150 hover:bg-vermilion/85 motion-reduce:transition-none"
           >
             🔮 리포트 보러 가기 →
           </Link>
+        ) : processing ? (
+          <Card className="p-4 text-center">
+            <p className="font-serif text-sm font-bold">명식을 짓는 중…</p>
+            <p className="mt-1 text-xs text-ink-soft">완료되면 이 화면이 알아서 바뀌어요</p>
+            <div className="ohaeng-rule mt-3 animate-pulse motion-reduce:animate-none" aria-hidden>
+              <i /><i /><i /><i /><i />
+            </div>
+          </Card>
+        ) : (
+          <Button size="lg" full onClick={analyze} loading={analyzing} disabled={!ready}>
+            {!ready ? `${3 - team.memberCount}명 더 모이면 시작해요`
+              : team.status === "failed" ? "⟳ 다시 시도하기"
+              : `✨ ${team.memberCount}명으로 리포트 생성`}
+          </Button>
         )}
+
+        {/* One row, tap anywhere to copy — the link is plumbing, not content. */}
+        <button
+          type="button"
+          onClick={copyLink}
+          aria-label="초대 링크 복사"
+          className="focus-seal flex min-h-touch w-full cursor-pointer items-center gap-2 rounded-control border border-ink/20 bg-card px-3 text-left transition-colors duration-150 hover:border-ink/40 motion-reduce:transition-none"
+        >
+          <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-ink-faint" aria-hidden
+            fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+            <path d="M8.5 11.5a3 3 0 004.2 0l2.6-2.6a3 3 0 10-4.2-4.2l-.9.9" />
+            <path d="M11.5 8.5a3 3 0 00-4.2 0l-2.6 2.6a3 3 0 104.2 4.2l.9-.9" />
+          </svg>
+          <code className="min-w-0 flex-1 truncate text-xs text-ink-soft">{shortUrl}</code>
+          <span className="shrink-0 text-xs font-semibold text-ink">{copied ? "복사됨" : "복사"}</span>
+        </button>
       </div>
+
+      {error && <p role="alert" className="text-sm text-vermilion">{error}</p>}
+
+      {/* The roster is the body of the page. */}
+      {team.members.length === 0 ? (
+        <Card className="p-6 text-center text-sm text-ink-soft">
+          아직 아무도 없어요.<br />먼저 내 정보를 넣어보세요.
+        </Card>
+      ) : (
+        <ul className="space-y-2">
+          {team.members.map((m) => {
+            const mine = m.nickname === myNickname;
+            return (
+              <li
+                key={m.nickname}
+                className={cx("washi rounded-card px-4 py-3", mine && "washi-marked")}
+              >
+                <p className="font-serif text-base font-bold">
+                  {m.nickname}
+                  {mine && <span className="ml-1.5 text-xs font-normal text-vermilion">· 나</span>}
+                </p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  {m.birthDate} · {m.mbti}
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {collecting && (
+        <Button variant="outline" size="lg" full onClick={() => setFormOpen(true)}>
+          + 멤버 추가하기
+        </Button>
+      )}
 
       <Sheet open={formOpen} onClose={() => setFormOpen(false)} title="멤버 추가">
         <MemberForm endpoint={`/teams/${token}/members`} onAdded={onAdded} />
