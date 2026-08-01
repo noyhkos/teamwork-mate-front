@@ -66,12 +66,30 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(circle at 15% 8%, rgba(255, 255, 255, 0.9), transparent 40%),
-    radial-gradient(circle at 90% 100%, rgba(214, 196, 158, 0.35), transparent 55%),
-    var(--paper);
+  background: var(--paper);
   color: var(--ink);
   -webkit-tap-highlight-color: rgba(195, 64, 43, 0.12);
+}
+
+/*
+ * The paper's grain, on a layer pinned to the viewport rather than painted on
+ * the body box. On the body it stretched to the full document height, so a
+ * 2000px report spread each colour step over hundreds of pixels and the
+ * gradient banded into visible stripes — and the longer the page, the worse it
+ * got. Fixed to the viewport it stays the same size on every screen.
+ *
+ * `background-attachment: fixed` would do the same thing in one line, but it
+ * is the property iOS Safari is worst at — it stutters while scrolling.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 8%, rgba(255, 255, 255, 0.9), transparent 45%),
+    radial-gradient(circle at 90% 100%, rgba(214, 196, 158, 0.3), transparent 60%);
 }
 
 /* Korean breaks between words, not inside them; a long nickname or archetype
