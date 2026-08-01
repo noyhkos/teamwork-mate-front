@@ -144,6 +144,7 @@ multi-column grid in the app is the calendar's 7-day week.
 | `/t/[token]` team | Header · state slot · compact link row · roster · add |
 | `/r/[slug]` report | Header and share card, then three tabs: 요약 · 관계 · 역할 |
 | `/design-system` | This system, rendered |
+| Link cards (OG) | 오행 bar on hanji, MaruBuri headline, `teamsaju.com` footer |
 
 The team page is the waiting room. The **roster is the body of the page** — a
 vertical stack of member cards, not chips — and a single slot above it holds
@@ -156,6 +157,14 @@ and reading the report.
 The roster does not mark "you". Without accounts the only signal is what this
 device typed, which is wrong whenever a teammate enters your details or one
 person enters several — so the app does not guess.
+
+**Link cards** are the only surface rendered outside the browser, so they
+restate the brand from scratch: the 오행 bar across the top, MaruBuri on
+`paper`, `teamsaju.com` at the foot. Two rules that do not carry over from the
+web surfaces — satori ships no Korean glyphs, so the font travels with every
+request, and it supports a flex subset only, so every container declares
+`display: flex` explicitly. The invite card reads the team so the preview
+names it and says how many are already in; the report keeps its own share PNG.
 
 ---
 
