@@ -8,7 +8,7 @@ import RelationPolygon, { memberAverages } from "./RelationPolygon";
 import { deriveTeamTraits } from "./teamTraits";
 import { ELEMENT_CLASS, type PairView, type Report } from "./types";
 
-const TABS = ["요약", "관계", "팀 특징", "역할"] as const;
+const TABS = ["요약", "관계", "역할"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function ReportTabs({ report }: { report: Report }) {
@@ -53,42 +53,6 @@ export default function ReportTabs({ report }: { report: Report }) {
             </div>
           </Card>
 
-          {report.bestPair && <PairCard tone="best" label="붉은 실" pair={report.bestPair} />}
-          {report.worstPair && <PairCard tone="worst" label="서걱이는 조합" pair={report.worstPair} />}
-        </div>
-      )}
-
-      {tab === "관계" && (
-        <div className="space-y-5">
-          <Card className="p-4">
-            <RelationPolygon members={members} pairs={report.pairs} />
-          </Card>
-
-          {averages.length > 1 && (
-            <div className="grid grid-cols-2 gap-2">
-              <Card className="border-l-4 border-l-water p-4">
-                <p className="text-tag uppercase text-water">중심축</p>
-                <p className="mt-1 font-serif text-lg font-bold">{averages[0].nickname}</p>
-                <p className="mt-0.5 text-xs text-ink-soft">
-                  평균 {Math.round(averages[0].avg)}점 — 팀에서 가장 두루 잘 맞아요
-                </p>
-              </Card>
-              <Card className="border-l-4 border-l-earth p-4">
-                <p className="text-tag uppercase text-earth">조율 포인트</p>
-                <p className="mt-1 font-serif text-lg font-bold">
-                  {averages[averages.length - 1].nickname}
-                </p>
-                <p className="mt-0.5 text-xs text-ink-soft">
-                  평균 {Math.round(averages[averages.length - 1].avg)}점 — 대화를 맞추면 크게 달라져요
-                </p>
-              </Card>
-            </div>
-          )}
-        </div>
-      )}
-
-      {tab === "팀 특징" && (
-        <div className="space-y-5">
           {strengths.length > 0 && (
             <section className="space-y-2">
               <SectionTitle eyebrow="strengths">이런 게 좋아요</SectionTitle>
@@ -136,6 +100,40 @@ export default function ReportTabs({ report }: { report: Report }) {
               ))}
             </ul>
           </section>
+        </div>
+      )}
+
+      {tab === "관계" && (
+        <div className="space-y-5">
+          <Card className="p-4">
+            <RelationPolygon members={members} pairs={report.pairs} />
+          </Card>
+
+          {averages.length > 1 && (
+            <div className="grid grid-cols-2 gap-2">
+              <Card className="border-l-4 border-l-water p-4">
+                <p className="text-tag uppercase text-water">중심축</p>
+                <p className="mt-1 font-serif text-lg font-bold">{averages[0].nickname}</p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  평균 {Math.round(averages[0].avg)}점 — 팀에서 가장 두루 잘 맞아요
+                </p>
+              </Card>
+              <Card className="border-l-4 border-l-earth p-4">
+                <p className="text-tag uppercase text-earth">조율 포인트</p>
+                <p className="mt-1 font-serif text-lg font-bold">
+                  {averages[averages.length - 1].nickname}
+                </p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  평균 {Math.round(averages[averages.length - 1].avg)}점 — 대화를 맞추면 크게 달라져요
+                </p>
+              </Card>
+            </div>
+          )}
+
+          {/* The pair cards live here rather than in 요약: everything on this
+              tab is about who sits next to whom. */}
+          {report.bestPair && <PairCard tone="best" label="붉은 실" pair={report.bestPair} />}
+          {report.worstPair && <PairCard tone="worst" label="서걱이는 조합" pair={report.worstPair} />}
         </div>
       )}
 

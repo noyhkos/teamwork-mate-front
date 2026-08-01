@@ -142,7 +142,7 @@ multi-column grid in the app is the calendar's 7-day week.
 |---|---|
 | `/` landing | Centred headline, one card with the create form, optional "이어서 하기" |
 | `/t/[token]` team | Header · state slot · compact link row · roster · add |
-| `/r/[slug]` report | Long scroll: header, share card, harmony, ranked roles, pairs, balance, CTA |
+| `/r/[slug]` report | Header and share card, then three tabs: 요약 · 관계 · 역할 |
 | `/design-system` | This system, rendered |
 
 The team page is the waiting room. The **roster is the body of the page** — a
