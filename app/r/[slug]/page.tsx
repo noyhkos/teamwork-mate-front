@@ -1,20 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { cache } from "react";
 import ReportTabs from "@/components/report/ReportTabs";
 import type { Report } from "@/components/report/types";
 import ShareBar from "@/components/ShareBar";
 
 const API = process.env.API_BASE_URL ?? "http://localhost:8080";
 
-async function getReport(slug: string): Promise<Report | null> {
+// generateMetadata and the page body both need the report. `no-store` opts out
+// of the data cache, so without this the same render pass fetches it twice.
+const getReport = cache(async (slug: string): Promise<Report | null> => {
   const res = await fetch(`${API}/api/reports/${slug}`, { cache: "no-store" });
   return res.ok ? res.json() : null;
-}
+});
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const report = await getReport(slug);
-  const title = report ? `${report.teamName} — ${report.archetype}` : "팀 리포트";
+  // The page calls notFound() for a missing report, and Next discards this
+  // metadata when it does — the root layout's defaults are what ship. Returning
+  // early only keeps us from dereferencing null, but it is also what stops a
+  // card.png that would itself 404 from being advertised as the preview image.
+  if (!report) return {};
+
+  const title = `${report.teamName} — ${report.archetype}`;
   return {
     title,
     openGraph: { title, images: [`/api/reports/${slug}/card.png`] },
@@ -24,9 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ReportPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const report = await getReport(slug);
-  if (!report) {
-    return <p className="pt-10 text-center text-ink-soft">리포트가 아직 없거나 만료됐어요.</p>;
-  }
+  // 200 with a sentence read as a real page to crawlers and to anyone who
+  // mistyped the slug. A wrong link should say so with a status code.
+  if (!report) notFound();
 
   return (
     <div className="space-y-6">
